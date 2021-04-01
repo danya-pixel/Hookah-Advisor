@@ -95,8 +95,8 @@ namespace Hookah_Advisor
                 // first row
                 new[]
                 {
-                    InlineKeyboardButton.WithCallbackData("Рекомендации", "11"),
-                    InlineKeyboardButton.WithCallbackData("Поиск", "22"),
+                    InlineKeyboardButton.WithCallbackData("Поиск", "11"),
+                    InlineKeyboardButton.WithCallbackData("Рекомендации", "22"),
                     InlineKeyboardButton.WithCallbackData("История", "33"),
                 },
             });
