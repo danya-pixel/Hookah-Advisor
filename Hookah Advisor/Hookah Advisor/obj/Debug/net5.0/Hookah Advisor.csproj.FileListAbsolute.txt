@@ -1,0 +1,19 @@
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.exe
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.deps.json
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.runtimeconfig.json
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.runtimeconfig.dev.json
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\ref\Hookah Advisor.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Hookah Advisor.pdb
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\bin\Debug\net5.0\Telegram.Bot.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.csprojAssemblyReference.cache
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.AssemblyInfoInputs.cache
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.AssemblyInfo.cs
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.csproj.CoreCompileInputs.cache
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.csproj.CopyComplete
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\ref\Hookah Advisor.dll
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.pdb
+C:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\Hookah Advisor\obj\Debug\net5.0\Hookah Advisor.genruntimeconfig.cache
