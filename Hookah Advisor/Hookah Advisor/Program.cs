@@ -5,6 +5,7 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Threading.Tasks;
+using Hookah_Advisor.Repositories;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.InputFiles;
@@ -15,33 +16,11 @@ namespace Hookah_Advisor
     class Program
     {
         static ITelegramBotClient botClient;
-        private static UsersTable usersTable;
-
-        class UsersTable //здесь будет таблица пользователей
-        {
-            private Dictionary<int, string> NameByIdDict;
-
-            public void AddUser(int userId, string userName)
-            {
-                if (!NameByIdDict.ContainsKey(userId))
-                    NameByIdDict[userId] = userName;
-                Console.WriteLine($"User {userName} has been added");
-            }
-
-            public bool IsUserRegistered(int userId)
-            {
-                return NameByIdDict.ContainsKey(userId);
-            }
-
-            public UsersTable()
-            {
-                NameByIdDict = new Dictionary<int, string>();
-            }
-        }
+        private static UserRepository userRepository;
 
         static void Main()
         {
-            botClient = new TelegramBotClient(Environment.GetEnvironmentVariable("TELEGRAM_TOKEN"));
+            botClient = new TelegramBotClient(BotSettings.Token);
 
             var me = botClient.GetMeAsync().Result;
             Console.WriteLine(
@@ -66,9 +45,8 @@ namespace Hookah_Advisor
 
             if (message.Text == "/start")
                 SendStartMessage(message.Chat, userFirstName);
-            
+
             await SendInlineKeyboard(message);
-           
         }
 
 
@@ -77,7 +55,7 @@ namespace Hookah_Advisor
             await botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Привет {userFirstName},\n" + "Добро пожаловть в Hookah Advisor \n");
-            
+
             await botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Что тебе интересно?");
@@ -106,15 +84,16 @@ namespace Hookah_Advisor
                 replyMarkup: inlineKeyboard
             );
         }
-        
-        
-        private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
+
+
+        private static async void BotOnCallbackQueryReceived(object sender,
+            CallbackQueryEventArgs callbackQueryEventArgs)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             switch (callbackQuery.Id)
             {
-                
             }
+
             await botClient.AnswerCallbackQueryAsync(
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}"

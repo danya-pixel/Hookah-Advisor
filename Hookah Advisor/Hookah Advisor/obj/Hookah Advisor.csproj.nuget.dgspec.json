@@ -1,21 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\charr\\Documents\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {}
+    "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\charr\\Documents\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {
+    "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\charr\\Documents\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
+        "projectUniqueName": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
         "projectName": "Hookah Advisor",
-        "projectPath": "C:\\Users\\charr\\Documents\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
-        "packagesPath": "C:\\Users\\charr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\charr\\Documents\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\obj\\",
+        "projectPath": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
+        "packagesPath": "C:\\Users\\Mi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\charr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Mi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -40,6 +45,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Telegram.Bot": {
               "target": "Package",
               "version": "[15.7.1, )"
@@ -60,7 +69,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
