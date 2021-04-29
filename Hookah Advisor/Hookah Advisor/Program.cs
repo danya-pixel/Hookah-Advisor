@@ -17,6 +17,9 @@ namespace Hookah_Advisor
     {
         static ITelegramBotClient botClient;
         private static UserRepository userRepository;
+        private const string buttonSearch = "Поиск";
+        private const string buttonRecomenations = "Рекомандации";
+        private const string buttonHistory = "История";
 
         static void Main()
         {
@@ -75,11 +78,11 @@ namespace Hookah_Advisor
         {
             await botClient.SendTextMessageAsync(
                 chatId: chat,
-                text: $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n"+
-                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n"+
-                      "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n"+
-                      "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" +"\n"+
-                      "«История📜» хранит все оцененные тобой табаки.\n"  +"\n"+
+                text: $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
+                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
+                      "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
+                      "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" + "\n" +
+                      "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
                       "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
@@ -90,21 +93,27 @@ namespace Hookah_Advisor
 
             // Simulate longer running task
 
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                // first row
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Поиск", "11"),
-                    InlineKeyboardButton.WithCallbackData("Рекомендации", "22"),
-                    InlineKeyboardButton.WithCallbackData("История", "33"),
-                },
-            });
             await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
                 text: "Выбирай: ",
-                replyMarkup: inlineKeyboard
+                replyMarkup: GetButtons()
             );
+        }
+
+        private static IReplyMarkup GetButtons()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new List<List<KeyboardButton>>
+                {
+                    new List<KeyboardButton>
+                    {
+                        new KeyboardButton {Text = buttonSearch}, new KeyboardButton {Text = buttonRecomenations},
+                        new KeyboardButton {Text = buttonHistory}
+                    }
+                },
+                ResizeKeyboard = true
+            };
         }
 
 
