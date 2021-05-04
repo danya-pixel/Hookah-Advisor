@@ -3,7 +3,7 @@ using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor.Repositories
 {
-    public class TobaccoRepository : ITobaccoRepository
+    public class TobaccoRepository : IItemRepository<Tobacco>
     {
         private readonly Dictionary<int, Tobacco> _tobaccoDatabase;
 
@@ -12,22 +12,22 @@ namespace Hookah_Advisor.Repositories
             // parse Json
         }
         
-        public Tobacco GetTobaccoById(int tobaccoId)
+        public Tobacco GetItemById(int tobaccoId)
         {
             throw new System.NotImplementedException();
         }
 
-        public void AddTobacco(Tobacco tobacco)
+        public void AddItem(Tobacco tobacco)
         {
             throw new System.NotImplementedException();
         }
 
-        public void DeleteTobacco(Tobacco tobacco)
+        public void DeleteItem(Tobacco tobacco)
         {
             throw new System.NotImplementedException();
         }
 
-        public void UpdateTobacco(Tobacco tobacco)
+        public void UpdateItem(Tobacco tobacco)
         {
             throw new System.NotImplementedException();
         }
