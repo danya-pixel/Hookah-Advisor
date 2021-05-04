@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor.Repositories
@@ -11,23 +12,24 @@ namespace Hookah_Advisor.Repositories
         {
             // parse Json
         }
-        
-        public Tobacco GetItemById(int tobaccoId)
+
+
+        public Tobacco GetItemById(int itemId)
         {
             throw new System.NotImplementedException();
         }
 
-        public void AddItem(Tobacco tobacco)
+        public void AddItem(Tobacco item)
         {
             throw new System.NotImplementedException();
         }
 
-        public void DeleteItem(Tobacco tobacco)
+        public void DeleteItem(Tobacco item)
         {
             throw new System.NotImplementedException();
         }
 
-        public void UpdateItem(Tobacco tobacco)
+        public void UpdateItem(Tobacco item)
         {
             throw new System.NotImplementedException();
         }
@@ -35,6 +37,21 @@ namespace Hookah_Advisor.Repositories
         public void Save()
         {
             throw new System.NotImplementedException();
+        }
+        
+        public List<Tobacco> SearchTobacco(string userRequest)
+        {
+            var tobaccoFromRequest = new List<Tobacco>();
+
+            foreach (var (id, tobacco) in _tobaccoDatabase)
+            {
+                if (tobacco.tastes.Contains(userRequest))
+                {
+                    tobaccoFromRequest.Append(tobacco);
+                }
+            }
+
+            return tobaccoFromRequest;
         }
     }
 }
