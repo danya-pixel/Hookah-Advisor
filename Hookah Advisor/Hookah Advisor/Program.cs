@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -17,6 +17,9 @@ namespace Hookah_Advisor
     {
         static ITelegramBotClient botClient;
         private static UserRepository userRepository;
+        private const string buttonSearch = "Поиск";
+        private const string buttonRecomenations = "Рекомандации";
+        private const string buttonHistory = "История";
 
         static void Main()
         {
@@ -46,6 +49,12 @@ namespace Hookah_Advisor
             if (message.Text == "/start")
                 SendStartMessage(message.Chat, userFirstName);
 
+            if (message.Text == "/help")
+                SendHelpMessage(message.Chat);
+
+            if (message.Text == "Поиск")
+                SearchTobacco(message.Chat);
+
             await SendInlineKeyboard(message);
         }
 
@@ -54,11 +63,67 @@ namespace Hookah_Advisor
         {
             await botClient.SendTextMessageAsync(
                 chatId: chat,
-                text: $"Привет {userFirstName},\n" + "Добро пожаловть в Hookah Advisor \n");
+                text: $"Привет {userFirstName},\n" +
+                      "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
+                      "Этот бот помогает найти табак для кальяна под твои предпочтения.💨 \n " + "\n" +
+                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞 \n" + "\n" +
+                      " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
+                      " «Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории. \n" + "\n" +
+                      " «История📜» хранит все оцененные тобой табаки. \n" + "\n" +
+                      " Жми на нужную тебе кнопку снизу!👇");
 
             await botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Что тебе интересно?");
+        }
+
+        static async void SendHelpMessage(Chat chat)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chat,
+                text: $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
+                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
+                      "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
+                      "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" + "\n" +
+                      "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
+                      "Жми на нужную тебе кнопку снизу!👇\n");
+        }
+
+        static async void SearchTobacco(Chat message)
+        {
+            string[] tastes = new string[]
+            {
+                "банан", "дыня", "говно", "хуй", "десерт", "печенье", "хлопья", "пирог", "мороженое", "конфеты",
+                "шоколад", "мёд", "жвачка", "карамель", "ваниль", "маффин", "фрукты", "дыня", "персик", "киви", "яблоко", "ананас", "груша", "личи", "питайя"
+            };
+            
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(tastes));
+
+            await botClient.SendTextMessageAsync(
+                chatId: message.Id,
+                text: "Выбирай вкус табака: ",
+                replyMarkup: keyboardMarkup
+            );
+        }
+
+        private static InlineKeyboardButton[][] GetInlineKeyboard(string[] stringArray)
+        {
+            var keyboardInline = new InlineKeyboardButton[stringArray.Length][];
+
+            for (var i = 0; i < stringArray.Length; i++)
+            {
+                keyboardInline[i] = new InlineKeyboardButton[]
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = stringArray[i],
+                        CallbackData =
+                            "Some Callback Data" //хз почему, но без этой строчки бот падает из-за того что не может парсить idk
+                    }
+                };
+            }
+
+            return keyboardInline;
         }
 
         static async Task SendInlineKeyboard(Message message)
@@ -68,21 +133,27 @@ namespace Hookah_Advisor
 
             // Simulate longer running task
 
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                // first row
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Поиск", "11"),
-                    InlineKeyboardButton.WithCallbackData("Рекомендации", "22"),
-                    InlineKeyboardButton.WithCallbackData("История", "33"),
-                },
-            });
             await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: "Выбирай: ",
-                replyMarkup: inlineKeyboard
+                text: "тест",
+                replyMarkup: GetButtons()
             );
+        }
+
+        private static IReplyMarkup GetButtons()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new List<List<KeyboardButton>>
+                {
+                    new List<KeyboardButton>
+                    {
+                        new KeyboardButton {Text = buttonSearch}, new KeyboardButton {Text = buttonRecomenations},
+                        new KeyboardButton {Text = buttonHistory}
+                    }
+                },
+                ResizeKeyboard = true
+            };
         }
 
 
