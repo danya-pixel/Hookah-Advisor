@@ -1,32 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {}
+    "C:\\Users\\garip\\RiderProjects\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {
+    "C:\\Users\\garip\\RiderProjects\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
+        "projectUniqueName": "C:\\Users\\garip\\RiderProjects\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
         "projectName": "Hookah Advisor",
-        "projectPath": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
-        "packagesPath": "C:\\Users\\Mi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mi\\Documents\\hookah\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\obj\\",
+        "projectPath": "C:\\Users\\garip\\RiderProjects\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\Hookah Advisor.csproj",
+        "packagesPath": "C:\\Users\\garip\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\garip\\RiderProjects\\Hookah-Advisor\\Hookah Advisor\\Hookah Advisor\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Mi\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\garip\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -69,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
         }
       }
     }

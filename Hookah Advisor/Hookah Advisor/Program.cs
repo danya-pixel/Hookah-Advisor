@@ -45,15 +45,19 @@ namespace Hookah_Advisor
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
-
-            if (message.Text == "/start")
-                SendStartMessage(message.Chat, userFirstName);
-
-            if (message.Text == "/help")
-                SendHelpMessage(message.Chat);
-
-            if (message.Text == "Поиск")
-                SearchTobacco(message.Chat);
+            var tobaccoRepository = new TobaccoRepository();
+            switch (message.Text)
+            {
+                case "/start":
+                    SendStartMessage(message.Chat, userFirstName);
+                    break;
+                case "/help":
+                    SendHelpMessage(message.Chat);
+                    break;
+                case "Поиск":
+                    tobaccoRepository.SearchTobacco(message.Text);
+                    break;
+            }
 
             await SendInlineKeyboard(message);
         }
@@ -93,7 +97,7 @@ namespace Hookah_Advisor
         {
             string[] tastes = new string[]
             {
-                "банан", "дыня", "говно", "хуй", "десерт", "печенье", "хлопья", "пирог", "мороженое", "конфеты",
+                "банан", "дыня", "десерт", "печенье", "хлопья", "пирог", "мороженое", "конфеты",
                 "шоколад", "мёд", "жвачка", "карамель", "ваниль", "маффин", "фрукты", "дыня", "персик", "киви", "яблоко", "ананас", "груша", "личи", "питайя"
             };
             
