@@ -12,7 +12,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="source" />
+      <Compile Remove="source\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="source\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="source\**" />
     </ItemGroup>
 
 </Project>
