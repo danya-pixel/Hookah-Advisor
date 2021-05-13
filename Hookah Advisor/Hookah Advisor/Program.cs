@@ -82,16 +82,13 @@ namespace Hookah_Advisor
                         var elsearray = new[] {"something"};
                         PrintArray(message.Chat, elsearray);
                     }
-                    
+
                     var icecold = new[] {"С холодком?", "Без холодка?"};
                     PrintArray(message.Chat, icecold);
-                    
-                    
+
+
                     break;
             }
-
-
-            await SendInlineKeyboard(message);
         }
 
 
@@ -165,7 +162,7 @@ namespace Hookah_Advisor
 
             await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: "как это убрать",
+                text: "говно",
                 replyMarkup: GetButtons()
             );
         }
