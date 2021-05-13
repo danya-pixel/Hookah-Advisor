@@ -39,7 +39,7 @@ namespace Hookah_Advisor.Repositories
             throw new System.NotImplementedException();
         }
         
-        public List<Tobacco> SearchTobacco(string userRequest)
+        public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
             var tobaccoFromRequest = new List<Tobacco>();
 
@@ -52,6 +52,18 @@ namespace Hookah_Advisor.Repositories
             }
 
             return tobaccoFromRequest;
+        }
+        
+        public List<Tobacco> RecommendTobacco()
+        {
+            //холодок
+           
+            
+            
+            
+            
+            //сладкий
+            return null;
         }
     }
 }

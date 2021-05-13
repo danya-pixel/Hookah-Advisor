@@ -18,7 +18,7 @@ namespace Hookah_Advisor
         static ITelegramBotClient botClient;
         private static UserRepository userRepository;
         private const string buttonSearch = "Поиск";
-        private const string buttonRecomenations = "Рекомандации";
+        private const string buttonRecomenations = "Рекомендации";
         private const string buttonHistory = "История";
 
         static void Main()
@@ -46,18 +46,50 @@ namespace Hookah_Advisor
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
             var tobaccoRepository = new TobaccoRepository();
+
+
             switch (message.Text)
             {
                 case "/start":
                     SendStartMessage(message.Chat, userFirstName);
                     break;
+
                 case "/help":
                     SendHelpMessage(message.Chat);
                     break;
+
                 case "Поиск":
-                    tobaccoRepository.SearchTobacco(message.Text);
+                    botClient.SendTextMessageAsync(
+                        chatId: message.Chat,
+                        text: $"Напиши, какой вкус ты ищешь:");
+
+                    //tobaccoRepository.SearchTobaccoInDict(message.Text);
+                    //SearchTobacco(message.Chat);
+                    break;
+
+                case "Рекомендации":
+                    //tobaccoRepository.RecommendTobacco();
+
+                    var sweet = new[] {"Сладкий?", "Несладкий?"};
+                    PrintArray(message.Chat, sweet);
+                    if (message.Text == "Сладкий")
+                    {
+                        var fruits = new[] {"Фрукты?", "Не фрукты?"};
+                        PrintArray(message.Chat, fruits);
+                    }
+                    else
+                    {
+                        var elsearray = new[] {"something"};
+                        PrintArray(message.Chat, elsearray);
+                    }
+                    
+                    var icecold = new[] {"С холодком?", "Без холодка?"};
+                    PrintArray(message.Chat, icecold);
+                    
+                    
                     break;
             }
+
 
             await SendInlineKeyboard(message);
         }
@@ -93,19 +125,13 @@ namespace Hookah_Advisor
                       "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
-        static async void SearchTobacco(Chat message)
+        public static async void PrintArray(Chat message, string[] array)
         {
-            string[] tastes = new string[]
-            {
-                "банан", "дыня", "десерт", "печенье", "хлопья", "пирог", "мороженое", "конфеты",
-                "шоколад", "мёд", "жвачка", "карамель", "ваниль", "маффин", "фрукты", "дыня", "персик", "киви", "яблоко", "ананас", "груша", "личи", "питайя"
-            };
-            
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(tastes));
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array));
 
             await botClient.SendTextMessageAsync(
                 chatId: message.Id,
-                text: "Выбирай вкус табака: ",
+                text: "Выбирай: ",
                 replyMarkup: keyboardMarkup
             );
         }
@@ -139,7 +165,7 @@ namespace Hookah_Advisor
 
             await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: "тест",
+                text: "как это убрать",
                 replyMarkup: GetButtons()
             );
         }
@@ -159,7 +185,6 @@ namespace Hookah_Advisor
                 ResizeKeyboard = true
             };
         }
-
 
         private static async void BotOnCallbackQueryReceived(object sender,
             CallbackQueryEventArgs callbackQueryEventArgs)
