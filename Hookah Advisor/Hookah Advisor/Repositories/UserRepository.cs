@@ -75,6 +75,11 @@ namespace Hookah_Advisor.Repositories
             return _usersByIdDict[userId];
         }
 
+        public Condition GetUserCondition(int userId)
+        {
+            return GetUserById(userId).GetUserCondition();
+        }
+        
         /// <summary>
         /// Метод, обрабатывающий событие, когда репозиторий обращается по userId
         /// к пользователю, которого не существует

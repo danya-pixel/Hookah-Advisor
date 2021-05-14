@@ -47,7 +47,7 @@ namespace Hookah_Advisor
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
             var tobaccoRepository = new TobaccoRepository();
-            
+
             switch (message.Text)
             {
                 case "/start":
@@ -61,6 +61,7 @@ namespace Hookah_Advisor
                         userRepository.UpdateUserCondition(userId, userCondition.none);
                         userRepository.UpdateUserQuestionNumber(userId, 0);
                     }
+
                     break;
 
                 case "/help":
@@ -73,19 +74,26 @@ namespace Hookah_Advisor
                     botClient.SendTextMessageAsync(
                         chatId: message.Chat,
                         text: $"Напиши, какой вкус ты ищешь:");
-                    
+
                     userRepository.UpdateUserCondition(userId, userCondition.search);
-                    
-                    
+
+
                     //tobaccoRepository.SearchTobaccoInDict(message.Text);
                     //SearchTobacco(message.Chat);
                     break;
 
                 case "Рекомендации":
+                    userRepository.UpdateUserCondition(userId, userCondition.recommendation);
+                    userRepository.UpdateUserQuestionNumber(userId, 0);
                     break;
             }
+            //ругается и не хочет сравнивать :C
+/*
+            if (userRepository.GetUserCondition(userId) == userCondition.search)
+            {
+                //взять новый меседж и printArray(уже реализованная функция в Program, она пишет массив в инлайнкиборд) из таблички всё с этим вкусом
+            }*/
         }
-
 
         static async void SendStartMessage(Chat chat, string userFirstName)
         {

@@ -36,5 +36,15 @@ namespace Hookah_Advisor
         {
             return userName;
         }
+        
+        public Condition GetUserCondition()
+        {
+            return condition;
+        }
+        // по идее надо для вопроса тоже гет сделать, но он чет ругается
+        /*public Condition GetUserQuestionNumber()
+        {
+            return questionNumber;
+        }*/
     }
 }
