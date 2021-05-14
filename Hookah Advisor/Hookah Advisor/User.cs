@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
+using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor
 {
@@ -12,17 +7,29 @@ namespace Hookah_Advisor
     {
         private int id;
         private string userName { get; set; }
-        public Stack<ICondition> UserConditions { get; set; }
-        
+
+        private Condition condition;
+
         public User(int id, string userName)
         {
             this.id = id;
             this.userName = userName;
+            condition = new Condition(userCondition.none, 0);
         }
 
         public void SetUserName(string newUserName)
         {
             userName = newUserName;
+        }
+
+        public void SetUserCondition(userCondition userCondition)
+        {
+            condition.SetCondition(userCondition);
+        }
+
+        public void SetUserQuestionNumber(int questionNumber)
+        {
+            condition.SetQuestionNumber(questionNumber);
         }
 
         public string GetUserName()

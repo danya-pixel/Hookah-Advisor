@@ -39,6 +39,22 @@ namespace Hookah_Advisor.Repositories
             GetUserById(userId).SetUserName(newUserName);
         }
 
+        public void UpdateUserCondition(int userId, userCondition condition)
+        {
+            if (!IsUserRegistered(userId))
+                InvalidUserHandler();
+            
+            GetUserById(userId).SetUserCondition(condition);
+        }
+        
+        public void UpdateUserQuestionNumber(int userId, int questionNumber)
+        {
+            if (!IsUserRegistered(userId))
+                InvalidUserHandler();
+            
+            GetUserById(userId).SetUserQuestionNumber(questionNumber);
+        }
+        
         public bool IsUserRegistered(int userId)
         {
             return _usersByIdDict.ContainsKey(userId);

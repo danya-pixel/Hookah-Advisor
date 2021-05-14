@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Threading.Tasks;
 using Hookah_Advisor.Repositories;
+using Hookah_Advisor.Repository_Interfaces;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.InputFiles;
@@ -46,47 +47,41 @@ namespace Hookah_Advisor
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
             var tobaccoRepository = new TobaccoRepository();
-
-
+            
             switch (message.Text)
             {
                 case "/start":
                     SendStartMessage(message.Chat, userFirstName);
+                    if (!userRepository.IsUserRegistered(userId))
+                    {
+                        userRepository.AddUserById(userId, userFirstName);
+                    }
+                    else
+                    {
+                        userRepository.UpdateUserCondition(userId, userCondition.none);
+                        userRepository.UpdateUserQuestionNumber(userId, 0);
+                    }
                     break;
 
                 case "/help":
                     SendHelpMessage(message.Chat);
+                    userRepository.UpdateUserCondition(userId, userCondition.none);
+                    userRepository.UpdateUserQuestionNumber(userId, 0);
                     break;
 
                 case "Поиск":
                     botClient.SendTextMessageAsync(
                         chatId: message.Chat,
                         text: $"Напиши, какой вкус ты ищешь:");
-
+                    
+                    userRepository.UpdateUserCondition(userId, userCondition.search);
+                    
+                    
                     //tobaccoRepository.SearchTobaccoInDict(message.Text);
                     //SearchTobacco(message.Chat);
                     break;
 
                 case "Рекомендации":
-                    //tobaccoRepository.RecommendTobacco();
-
-                    var sweet = new[] {"Сладкий?", "Несладкий?"};
-                    PrintArray(message.Chat, sweet);
-                    if (message.Text == "Сладкий")
-                    {
-                        var fruits = new[] {"Фрукты?", "Не фрукты?"};
-                        PrintArray(message.Chat, fruits);
-                    }
-                    else
-                    {
-                        var elsearray = new[] {"something"};
-                        PrintArray(message.Chat, elsearray);
-                    }
-
-                    var icecold = new[] {"С холодком?", "Без холодка?"};
-                    PrintArray(message.Chat, icecold);
-
-
                     break;
             }
         }
