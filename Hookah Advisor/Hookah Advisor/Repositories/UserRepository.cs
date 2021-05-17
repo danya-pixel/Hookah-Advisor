@@ -9,12 +9,7 @@ namespace Hookah_Advisor.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly Dictionary<int, User> _usersByIdDict;
-
-        public UserRepository()
-        {
-            _usersByIdDict = new Dictionary<int, User>();
-        }
+        private static Dictionary<int, User> _usersByIdDict = new Dictionary<int, User>();
 
         public void AddUserById(int userId, string userName)
         {

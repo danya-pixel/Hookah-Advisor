@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InlineQueryResults;
-using Telegram.Bot.Types.InputFiles;
-using Telegram.Bot.Types.ReplyMarkups;
+
 
 namespace Hookah_Advisor
 {
     class Program
     {
         static ITelegramBotClient botClient;
-        private static UserRepository userRepository;
+        private static UserRepository userRepository = new UserRepository();
+        private static TobaccoRepository tobaccoRepository = new TobaccoRepository();
         private const string buttonSearch = "Поиск";
         private const string buttonRecomenations = "Рекомендации";
         private const string buttonHistory = "История";
@@ -46,53 +45,53 @@ namespace Hookah_Advisor
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
-            var tobaccoRepository = new TobaccoRepository();
+            //var tobaccoRepository = new TobaccoRepository();
+            var userRepository = new UserRepository();
 
-            switch (message.Text)
+
+            if (message.Text == "/start")
             {
-                case "/start":
-                    SendStartMessage(message.Chat, userFirstName);
-                    if (!userRepository.IsUserRegistered(userId))
-                    {
-                        userRepository.AddUserById(userId, userFirstName);
-                    }
-                    else
-                    {
-                        userRepository.UpdateUserCondition(userId, userCondition.none);
-                        userRepository.UpdateUserQuestionNumber(userId, 0);
-                    }
-
-                    break;
-
-                case "/help":
-                    SendHelpMessage(message.Chat);
+                SendStartMessage(message.Chat, userFirstName);
+                if (!userRepository.IsUserRegistered(userId))
+                {
+                    userRepository.AddUserById(userId, userFirstName);
+                }
+                else
+                {
                     userRepository.UpdateUserCondition(userId, userCondition.none);
                     userRepository.UpdateUserQuestionNumber(userId, 0);
-                    break;
-
-                case "Поиск":
-                    botClient.SendTextMessageAsync(
-                        chatId: message.Chat,
-                        text: $"Напиши, какой вкус ты ищешь:");
-
-                    userRepository.UpdateUserCondition(userId, userCondition.search);
-
-
-                    //tobaccoRepository.SearchTobaccoInDict(message.Text);
-                    //SearchTobacco(message.Chat);
-                    break;
-
-                case "Рекомендации":
-                    userRepository.UpdateUserCondition(userId, userCondition.recommendation);
-                    userRepository.UpdateUserQuestionNumber(userId, 0);
-                    break;
+                }
             }
-            //ругается и не хочет сравнивать :C
-/*
-            if (userRepository.GetUserCondition(userId) == userCondition.search)
+
+            if (message.Text == "/help")
             {
+                SendHelpMessage(message.Chat);
+                userRepository.UpdateUserCondition(userId, userCondition.none);
+                userRepository.UpdateUserQuestionNumber(userId, 0);
+            }
+
+            if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.search)
+            {
+                
+                var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text);
+                PrintArray(message.Chat, TobaccoToString(resultRequest));
                 //взять новый меседж и printArray(уже реализованная функция в Program, она пишет массив в инлайнкиборд) из таблички всё с этим вкусом
-            }*/
+            }
+
+            if (message.Text == "Поиск")
+            {
+                botClient.SendTextMessageAsync(
+                    chatId: message.Chat,
+                    text: $"Напиши, какой вкус ты ищешь:");
+
+                userRepository.UpdateUserCondition(userId, userCondition.search);
+            }
+
+            if (message.Text == "Рекомендации")
+            {
+                userRepository.UpdateUserCondition(userId, userCondition.recommendation);
+                userRepository.UpdateUserQuestionNumber(userId, 0);
+            }
         }
 
         static async void SendStartMessage(Chat chat, string userFirstName)
@@ -125,10 +124,24 @@ namespace Hookah_Advisor
                       "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
+        public static string[] TobaccoToString(List<Tobacco> tobaccos)
+        {
+            Console.WriteLine("преобразую листы в массив");
+            var array = new string[tobaccos.Count];
+            Console.WriteLine(tobaccos.Count);
+            for (int i = 0; i <= tobaccos.Count; i++)
+            {
+                array[i] = tobaccos[i].name;
+                //Console.WriteLine(array[i]);
+            }
+
+            return array;
+        }
+
         public static async void PrintArray(Chat message, string[] array)
         {
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array));
-
+            Console.WriteLine("преобразую листы в массив");
             await botClient.SendTextMessageAsync(
                 chatId: message.Id,
                 text: "Выбирай: ",

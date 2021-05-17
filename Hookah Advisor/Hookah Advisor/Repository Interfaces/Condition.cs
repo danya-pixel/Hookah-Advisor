@@ -9,7 +9,7 @@
 
     public class Condition
     {
-        private userCondition condition = userCondition.none;
+        public userCondition condition = userCondition.none;
         private int questionNumber = 0;
 
         public Condition(userCondition condition, int questionNumber)
