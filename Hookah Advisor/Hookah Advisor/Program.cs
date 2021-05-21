@@ -12,103 +12,113 @@ namespace Hookah_Advisor
 {
     class Program
     {
-        static ITelegramBotClient botClient;
-        private static UserRepository userRepository = new();
-        private static TobaccoRepository tobaccoRepository = new();
-        private const string buttonSearch = "Поиск";
-        private const string buttonRecomendations = "Рекомендации";
-        private const string buttonHistory = "История";
+        static ITelegramBotClient _botClient;
+        private static readonly UserRepository UserRepository = new();
+        private static readonly TobaccoRepository TobaccoRepository = new();
+        private const string ButtonSearch = "Поиск";
+        private const string ButtonRecommendations = "Рекомендации";
+        private const string ButtonHistory = "История";
         private static readonly string[] YesOrNoKeyboard = {"Да", "Нет"};
 
         static void Main()
         {
-            botClient = new TelegramBotClient(BotSettings.Token);
+            _botClient = new TelegramBotClient(BotSettings.Token);
 
-            var me = botClient.GetMeAsync().Result;
+            var me = _botClient.GetMeAsync().Result;
             Console.WriteLine(
                 $"Hello, World! I am user {me.Id} and my name is {me.FirstName}."
             );
 
-            botClient.OnMessage += Bot_OnMessage;
-            botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
-            botClient.StartReceiving();
+            _botClient.OnMessage += BotOnMessage;
+            _botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
+            _botClient.StartReceiving();
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
 
-            botClient.StopReceiving();
+            _botClient.StopReceiving();
         }
 
-        static async void Bot_OnMessage(object sender, MessageEventArgs e)
+        private static async void BotOnMessage(object sender, MessageEventArgs e)
         {
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
 
-            if (message.Text == "/start")
-            {
-                SendStartMessage(message.Chat, userFirstName);
-                if (!userRepository.IsUserRegistered(userId))
-                {
-                    userRepository.AddUserById(userId, userFirstName);
-                }
-                else
-                {
-                    userRepository.UpdateUserCondition(userId, userCondition.none);
-                    userRepository.UpdateUserQuestionNumber(userId, 0);
-                }
-            }
 
-            if (message.Text == "/help")
+            switch (message.Text)
             {
-                SendHelpMessage(message.Chat);
-                userRepository.UpdateUserCondition(userId, userCondition.none);
-                userRepository.UpdateUserQuestionNumber(userId, 0);
-                userRepository.SaveToJson("users.json");
-            }
-
-            if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.search)
-            {
-                var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text.ToLower());
-                if (resultRequest.Count == 0)
+                case "/start":
                 {
-                    await botClient.SendTextMessageAsync(
+                    SendStartMessage(message.Chat, userFirstName);
+                    if (!UserRepository.IsUserRegistered(userId))
+                    {
+                        UserRepository.AddUserById(userId, userFirstName);
+                    }
+                    else
+                    {
+                        UserRepository.UpdateUserCondition(userId, userCondition.none);
+                        UserRepository.UpdateUserQuestionNumber(userId, 0);
+                    }
+
+                    break;
+                }
+                case "/help":
+                    SendHelpMessage(message.Chat);
+                    UserRepository.UpdateUserCondition(userId, userCondition.none);
+                    UserRepository.UpdateUserQuestionNumber(userId, 0);
+                    UserRepository.SaveToJson("users.json");
+                    break;
+
+                case "Поиск":
+                    await _botClient.SendTextMessageAsync(
                         chatId: message.Chat,
-                        text: $"К сожалению, у меня нет табака с таким вкусом :c");
-                }
-                else PrintTobaccoToKeyboard(message.Chat, resultRequest);
-            }
+                        text: $"Напиши, какой вкус ты ищешь:");
 
-            if (message.Text == "Поиск")
-            {
-                await botClient.SendTextMessageAsync(
-                    chatId: message.Chat,
-                    text: $"Напиши, какой вкус ты ищешь:");
+                    UserRepository.UpdateUserCondition(userId, userCondition.search);
+                    break;
+                case "Рекомендации":
+                    UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
+                    UserRepository.UpdateUserQuestionNumber(userId, 0);
 
-                userRepository.UpdateUserCondition(userId, userCondition.search);
-            }
+                    await _botClient.SendTextMessageAsync(
+                        chatId: message.Chat,
+                        text: $"Тебя интересует табак с холодком?");
+                    PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
+                    UserRepository.UpdateUserQuestionNumber(userId, 1);
+                    break;
+                default:
+                    switch (UserRepository.GetUserCondition(userId).GetCondition())
+                    {
+                        case userCondition.none:
+                            break;
+                        case userCondition.search:
+                        {
+                            var resultRequest = TobaccoRepository.SearchTobaccoInDict(message.Text.ToLower());
+                            if (resultRequest.Count == 0)
+                            {
+                                await _botClient.SendTextMessageAsync(
+                                    chatId: message.Chat,
+                                    text: $"К сожалению, у меня нет табака с таким вкусом :c");
+                            }
+                            else PrintTobaccoToKeyboard(message.Chat, resultRequest);
 
-            if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.recommendation)
-            {
-                //userRepository.GetUserCondition(userId).GetQuestionNumber() == 
-            }
+                            break;
+                        }
 
-            if (message.Text == "Рекомендации")
-            {
-                userRepository.UpdateUserCondition(userId, userCondition.recommendation);
-                userRepository.UpdateUserQuestionNumber(userId, 0);
+                        case userCondition.recommendation:
+                            break;
 
-                await botClient.SendTextMessageAsync(
-                    chatId: message.Chat,
-                    text: $"Тебя интересует табак с холодком?");
-                PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
-                userRepository.UpdateUserQuestionNumber(userId, 1);
+                        default:
+                            break;
+                    }
+                    break;
             }
         }
 
         static async void SendStartMessage(Chat chat, string userFirstName)
         {
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Привет {userFirstName},\n" +
                       "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
@@ -119,7 +129,7 @@ namespace Hookah_Advisor
                       " «История📜» хранит все оцененные тобой табаки. \n" + "\n" +
                       " Жми на нужную тебе кнопку снизу!👇");
 
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Что тебе интересно?",
                 replyMarkup: GetButtons());
@@ -127,7 +137,7 @@ namespace Hookah_Advisor
 
         static async void SendHelpMessage(Chat chat)
         {
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: chat,
                 text: $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
                       "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
@@ -162,7 +172,7 @@ namespace Hookah_Advisor
 
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForSearch(array, idTobaccos));
             Console.WriteLine("преобразую листы в массив");
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: message.Id,
                 text: "Выбирай: ",
                 replyMarkup: keyboardMarkup
@@ -193,7 +203,7 @@ namespace Hookah_Advisor
         {
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForRecomendation(array));
             Console.WriteLine("преобразую листы в массив");
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: message.Id,
                 text: "Выбирай: ",
                 replyMarkup: keyboardMarkup
@@ -219,7 +229,7 @@ namespace Hookah_Advisor
 
             return keyboardInline;
         }
-        
+
         private static IReplyMarkup GetButtons()
         {
             return new ReplyKeyboardMarkup
@@ -228,8 +238,8 @@ namespace Hookah_Advisor
                 {
                     new List<KeyboardButton>
                     {
-                        new KeyboardButton {Text = buttonSearch}, new KeyboardButton {Text = buttonRecomendations},
-                        new KeyboardButton {Text = buttonHistory}
+                        new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations},
+                        new KeyboardButton {Text = ButtonHistory}
                     }
                 },
                 ResizeKeyboard = true
@@ -251,12 +261,12 @@ namespace Hookah_Advisor
             {
             }
 
-            await botClient.AnswerCallbackQueryAsync(
+            await _botClient.AnswerCallbackQueryAsync(
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}"
             );
 
-            await botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
                 chatId: callbackQuery.Message.Chat.Id,
                 text: $"Received {callbackQuery.Data}"
             );

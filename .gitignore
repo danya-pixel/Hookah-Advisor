@@ -14,8 +14,8 @@
 # .idea
 *.idea
 #git file
-Hookah Advisor/git
+Hookah\ Advisor/git
 #obj 
-Hookah Advisor/Hookah Advisor/obj
+Hookah\ Advisor/obj
 #bin
-Hookah Advisor/Hookah Advisor/bin
+Hookah\ Advisor/bin
