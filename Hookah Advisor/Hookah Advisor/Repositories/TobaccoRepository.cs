@@ -37,16 +37,12 @@ namespace Hookah_Advisor.Repositories
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
             var tobaccoFromRequest = new List<Tobacco>();
-            Console.WriteLine("начинаю поиск");
             foreach (var (id, tobacco) in _tobaccoDatabase)
             {
                 if (!tobacco.tastes.Contains(userRequest)) continue;
 
                 tobaccoFromRequest.Add(tobacco);
-                Console.WriteLine(tobacco.name);
             }
-
-            Console.WriteLine("сейчас кину список че нашёл");
             return tobaccoFromRequest;
         }
 

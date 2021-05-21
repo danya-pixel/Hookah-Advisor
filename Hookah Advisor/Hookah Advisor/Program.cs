@@ -56,13 +56,14 @@ namespace Hookah_Advisor
                     if (!UserRepository.IsUserRegistered(userId))
                     {
                         UserRepository.AddUserById(userId, userFirstName);
+                        UserRepository.Save();
                     }
                     else
                     {
                         UserRepository.UpdateUserCondition(userId, userCondition.none);
                         UserRepository.UpdateUserQuestionNumber(userId, 0);
                     }
-
+                    
                     break;
                 }
                 case "/help":
@@ -146,7 +147,7 @@ namespace Hookah_Advisor
                 "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
                 "Жми на нужную тебе кнопку снизу!👇\n");
         }
-        
+
         public static async void PrintTobaccoToKeyboard(Chat message, List<Tobacco> tobaccos)
         {
             var array = tobaccos.Select(t => t.ToString());
@@ -212,17 +213,23 @@ namespace Hookah_Advisor
             var type = callbackData.Split('_')[0];
             var idTobacco = Convert.ToInt32(callbackData.Split('_')[1]);
             var tobaccoFromTap = TobaccoRepository.GetItemById(idTobacco);
-            var result = tobaccoFromTap.brand + ": " + tobaccoFromTap.name + "\n" + "\n" + tobaccoFromTap.description;//прикрутить перегруженный tostring
+            // var result = tobaccoFromTap.brand + ": " + tobaccoFromTap.name + "\n" + "\n" + tobaccoFromTap.description;//прикрутить перегруженный tostring
+            var result = $"{tobaccoFromTap}\n\n{tobaccoFromTap.description}"; //прикрутить перегруженный tostring
 
             if (type == "tobaccoFromRequest")
             {
                 await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result);
+                await _botClient.AnswerCallbackQueryAsync(
+                    callbackQuery.Id,
+                    $"{tobaccoFromTap}"
+                );
             }
+
 
             if (type == "")
             {
             }
-            
+
             /*await _botClient.AnswerCallbackQueryAsync(
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}"
