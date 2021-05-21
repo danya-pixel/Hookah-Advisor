@@ -72,12 +72,16 @@ namespace Hookah_Advisor
 
             if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.search)
             {
-                
-                var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text);
-                PrintArray(message.Chat, TobaccoToString(resultRequest));
-                //взять новый меседж и printArray(уже реализованная функция в Program, она пишет массив в инлайнкиборд) из таблички всё с этим вкусом
+                var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text.ToLower());
+                if (resultRequest.Count == 0)
+                {
+                    botClient.SendTextMessageAsync(
+                        chatId: message.Chat,
+                        text: $"К сожалению, у меня нет табака с таким вкусом :c");
+                }
+                else PrintArray(message.Chat, TobaccoToString(resultRequest));
             }
-
+            
             if (message.Text == "Поиск")
             {
                 botClient.SendTextMessageAsync(
@@ -87,10 +91,17 @@ namespace Hookah_Advisor
                 userRepository.UpdateUserCondition(userId, userCondition.search);
             }
 
+            if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.recommendation)
+            {
+                //questionNumber = 1 и тд
+            }
+            
             if (message.Text == "Рекомендации")
             {
                 userRepository.UpdateUserCondition(userId, userCondition.recommendation);
                 userRepository.UpdateUserQuestionNumber(userId, 0);
+                
+                //отправить нулевой вопрос про холодок
             }
         }
 
@@ -129,7 +140,7 @@ namespace Hookah_Advisor
             Console.WriteLine("преобразую листы в массив");
             var array = new string[tobaccos.Count];
             Console.WriteLine(tobaccos.Count);
-            for (int i = 0; i <= tobaccos.Count; i++)
+            for (int i = 0; i < tobaccos.Count; i++)
             {
                 array[i] = tobaccos[i].name;
                 //Console.WriteLine(array[i]);

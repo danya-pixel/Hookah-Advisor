@@ -12,7 +12,7 @@ namespace Hookah_Advisor.Repositories
             {
                 1,
                 new Tobacco(1, "Банановое говно", "banana mama with shit's smell", new List<string> {"Фрукты", "говно"},
-                    new List<string> {"Банан", "говно"})
+                    new List<string> {"банан", "говно"})
             }
         };
 
@@ -56,7 +56,7 @@ namespace Hookah_Advisor.Repositories
             {
                 if (tobacco.tastes.Contains(userRequest))
                 {
-                    tobaccoFromRequest.Append(tobacco);
+                    tobaccoFromRequest.Add(tobacco);
                     Console.WriteLine(tobacco.name);
                 }
             }
@@ -67,10 +67,7 @@ namespace Hookah_Advisor.Repositories
 
         public List<Tobacco> RecommendTobacco()
         {
-            //холодок
 
-
-            //сладкий
             return null;
         }
     }

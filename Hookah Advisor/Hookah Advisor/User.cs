@@ -44,7 +44,7 @@ namespace Hookah_Advisor
         // по идее надо для вопроса тоже гет сделать, но он чет ругается
         /*public Condition GetUserQuestionNumber()
         {
-            return questionNumber;
+            return condition.GetQuestionNumber();
         }*/
     }
 }
