@@ -8,6 +8,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
+using Telegram.Bot.Types.Enums;
 
 
 namespace Hookah_Advisor
@@ -47,8 +48,17 @@ namespace Hookah_Advisor
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
-
-
+            
+            if (message.Type == MessageType.Text && message.Text == "🍌")
+                message.Text = "Банан";
+            if (message.Type == MessageType.Sticker && message.Sticker.SetName.ToLower().Contains("banan"))
+                message.Text = "Банан";
+            else if (message.Type == MessageType.Sticker)
+            {
+                await _botClient.SendTextMessageAsync(
+                    message.Chat,
+                    $"К сожалению, у меня нет табака с таким вкусом :c");
+            }
             switch (message.Text)
             {
                 case "/start":
@@ -248,8 +258,19 @@ namespace Hookah_Advisor
             switch (type)
             {
                 case "tobaccoFromRequest":
+                    var tags = new HashSet<string>();
+                    foreach (var t in tobaccoFromTap.categories.Select(t => $"#{t}"))
+                    {
+                        tags.Add(t);
+                    }
+
+                    foreach (var t in tags.Concat(tobaccoFromTap.tastes.Select(t => $"#{t}")))
+                    {
+                        tags.Add(t);
+                    }
+
                     var result =
-                        $"{tobaccoFromTap}\n{string.Join(" ", tobaccoFromTap.tastes.Select(t => $"#{t}"))}\n\n{tobaccoFromTap.description}";
+                        $"{tobaccoFromTap}\n{string.Join(" ", tags)}\n\n{tobaccoFromTap.description}";
                     if (user.SmokingLater.Contains(idTobacco))
                     {
                         await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
