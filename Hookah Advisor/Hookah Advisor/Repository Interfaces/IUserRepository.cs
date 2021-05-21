@@ -9,7 +9,7 @@ namespace Hookah_Advisor.Repository_Interfaces
         void AddUserById(int userId, string userName);
         void DeleteUserById(int userId); // пока не знаю насколько нужно
         void UpdateUsername(int userId, string newUserName);
-        void SaveToJson();
-        void LoadFromJson();
+        void SaveToJson(string fileName);
+        void LoadFromJson(string fileName);
     }
 }

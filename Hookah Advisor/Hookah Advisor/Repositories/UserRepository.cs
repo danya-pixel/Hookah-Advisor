@@ -9,13 +9,13 @@ namespace Hookah_Advisor.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static Dictionary<int, User> _usersByIdDict = new Dictionary<int, User>();
+        private static readonly Dictionary<int, User> UsersByIdDict = new();
 
         public void AddUserById(int userId, string userName)
         {
             var newUser = new User(userId, userName);
             if (!IsUserRegistered(userId))
-                _usersByIdDict[userId] = newUser;
+                UsersByIdDict[userId] = newUser;
             Console.WriteLine($"User {userName} has been added");
         }
 
@@ -23,7 +23,7 @@ namespace Hookah_Advisor.Repositories
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            _usersByIdDict.Remove(userId);
+            UsersByIdDict.Remove(userId);
         }
 
         public void UpdateUsername(int userId, string newUserName)
@@ -52,12 +52,12 @@ namespace Hookah_Advisor.Repositories
         
         public bool IsUserRegistered(int userId)
         {
-            return _usersByIdDict.ContainsKey(userId);
+            return UsersByIdDict.ContainsKey(userId);
         }
 
         public IEnumerable<User> GetUsers()
         {
-            foreach (var (_, user) in _usersByIdDict)
+            foreach (var (_, user) in UsersByIdDict)
             {
                 yield return user;
             }
@@ -67,7 +67,7 @@ namespace Hookah_Advisor.Repositories
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            return _usersByIdDict[userId];
+            return UsersByIdDict[userId];
         }
 
         public Condition GetUserCondition(int userId)
@@ -85,17 +85,24 @@ namespace Hookah_Advisor.Repositories
             throw new ArgumentException("User does not exist");
         }
 
-        public void SaveToJson()
+        public void SaveToJson(string fileName)
         {
-            var convertedDictionary = _usersByIdDict.ToDictionary(item => item.Key, item => item.Value.GetUserName());
-            using var file = File.CreateText(@"\path"); //should be implemented
+            var convertedDictionary = UsersByIdDict.ToDictionary(item => item.Key, item => item.Value.GetUserName());
+            using var file = File.CreateText("../../../" + fileName); //should be implemented
             var serializer = new JsonSerializer();
             serializer.Serialize(file, convertedDictionary);
         }
 
-        public void LoadFromJson()
+        public void LoadFromJson(string fileName)
         {
-            throw new NotImplementedException();
+            var str = File.ReadAllText("../../../" + fileName);
+            var usersDict = JsonConvert.DeserializeObject<Dictionary<int,string>>(str);
+            if (usersDict == null) return;
+            
+            foreach (var (id, name) in usersDict)
+            {
+                AddUserById(id, name);
+            }
         }
     }
 }
