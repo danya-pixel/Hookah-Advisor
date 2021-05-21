@@ -4,10 +4,8 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using System.Threading.Tasks;
 using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
-using Telegram.Bot.Types.Enums;
 
 
 namespace Hookah_Advisor
@@ -15,8 +13,8 @@ namespace Hookah_Advisor
     class Program
     {
         static ITelegramBotClient botClient;
-        private static UserRepository userRepository = new UserRepository();
-        private static TobaccoRepository tobaccoRepository = new TobaccoRepository();
+        private static UserRepository userRepository = new();
+        private static TobaccoRepository tobaccoRepository = new();
         private const string buttonSearch = "Поиск";
         private const string buttonRecomendations = "Рекомендации";
         private const string buttonHistory = "История";
@@ -46,9 +44,6 @@ namespace Hookah_Advisor
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
-            //var tobaccoRepository = new TobaccoRepository();
-            var userRepository = new UserRepository();
-
 
             if (message.Text == "/start")
             {
@@ -69,6 +64,7 @@ namespace Hookah_Advisor
                 SendHelpMessage(message.Chat);
                 userRepository.UpdateUserCondition(userId, userCondition.none);
                 userRepository.UpdateUserQuestionNumber(userId, 0);
+                userRepository.SaveToJson("users.json");
             }
 
             if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.search)

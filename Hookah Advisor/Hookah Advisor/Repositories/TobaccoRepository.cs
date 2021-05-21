@@ -7,12 +7,11 @@ namespace Hookah_Advisor.Repositories
     public class TobaccoRepository : IItemRepository<Tobacco>
     {
         private readonly Dictionary<int, Tobacco> _tobaccoDatabase;
-        private readonly TableParser _tableParser;
 
         public TobaccoRepository()
         {
-            _tableParser = new TableParser();
-            _tobaccoDatabase = _tableParser.LoadJson("table_v2.json");
+            var tableParser = new TableParser();
+            _tobaccoDatabase = tableParser.LoadJson("table_v2.json");
         }
 
 
@@ -27,16 +26,6 @@ namespace Hookah_Advisor.Repositories
                 Console.WriteLine(e);
                 throw new KeyNotFoundException();
             }
-        }
-
-        public void AddItem(Tobacco item)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void DeleteItem(Tobacco item)
-        {
-            throw new System.NotImplementedException();
         }
 
         public void Save()

@@ -1,10 +1,8 @@
 ﻿namespace Hookah_Advisor.Repository_Interfaces
 {
-    public interface IItemRepository<T>
+    public interface IItemRepository<out T>
     {
         T GetItemById(int itemId);
-        void AddItem(T item);
-        void DeleteItem(T item);
         void Save();
     }
 }
