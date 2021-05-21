@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hookah_Advisor.Parsers;
 using Hookah_Advisor.Repository_Interfaces;
 
@@ -38,11 +39,9 @@ namespace Hookah_Advisor.Repositories
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
             var tobaccoFromRequest = new List<Tobacco>();
-            foreach (var (_, tobacco) in _tobaccoDatabase)
+            foreach (var tobacco in _tobaccoDatabase.Values)
             {
-                if (!tobacco.tastes.Contains(userRequest)) continue;
-
-                tobaccoFromRequest.Add(tobacco);
+                tobaccoFromRequest.AddRange(from t in tobacco.tastes where t.Contains(userRequest) select tobacco);
             }
 
             return tobaccoFromRequest;
