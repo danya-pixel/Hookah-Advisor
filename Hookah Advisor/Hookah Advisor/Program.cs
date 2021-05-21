@@ -145,27 +145,13 @@ namespace Hookah_Advisor
                 "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
                 "Жми на нужную тебе кнопку снизу!👇\n");
         }
-
-        public static string[] TobaccoToString(List<Tobacco> tobaccos)
-        {
-            Console.WriteLine("преобразую листы в массив");
-            var array = new string[tobaccos.Count];
-            Console.WriteLine(tobaccos.Count);
-            for (var i = 0; i < tobaccos.Count; i++)
-            {
-                array[i] = tobaccos[i].brand + ": " + tobaccos[i].name;
-            }
-
-            return array;
-        }
-
+        
         public static async void PrintTobaccoToKeyboard(Chat message, List<Tobacco> tobaccos)
         {
             var array = tobaccos.Select(t => t.ToString());
             var idTobaccos = tobaccos.Select(t => t.id);
 
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, "tobaccoFromRequest"));
-            Console.WriteLine("преобразую листы в массив");
             await _botClient.SendTextMessageAsync(
                 message.Id,
                 "Выбирай: ",
@@ -194,7 +180,6 @@ namespace Hookah_Advisor
         {
             var keyboardMarkup =
                 new InlineKeyboardMarkup(GetInlineKeyboard(array, Enumerable.Range(0, array.Count), "yesno_"));
-            Console.WriteLine("преобразую листы в массив");
             await _botClient.SendTextMessageAsync(
                 message.Id,
                 "Выбирай: ",
@@ -223,25 +208,24 @@ namespace Hookah_Advisor
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackData = callbackQuery.Data;
-            var keyboardCondition = callbackData.Split('_')[0];
+            var type = callbackData.Split('_')[0];
+            var idTobacco = Convert.ToInt32(callbackData.Split('_')[1]);
+            var tobaccoFromTap = TobaccoRepository.GetItemById(idTobacco);
+            var result = tobaccoFromTap.brand + ": " + tobaccoFromTap.name + "\n" + "\n" + tobaccoFromTap.description;//прикрутить перегруженный tostring
 
-            if (keyboardCondition == "tobaccoFromRequest")
+            if (type == "tobaccoFromRequest")
             {
+                await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result);
             }
 
-            if (keyboardCondition == "")
+            if (type == "")
             {
             }
-
-            await _botClient.AnswerCallbackQueryAsync(
-                callbackQuery.Id,
-                $"Received {callbackQuery.Data}"
-            );
-
-            await _botClient.SendTextMessageAsync(
-                callbackQuery.Message.Chat.Id,
-                $"Received {callbackQuery.Data}"
-            );
+            
+            /*await _botClient.AnswerCallbackQueryAsync(
+                callbackQueryId: callbackQuery.Id,
+                text: $"Received {callbackQuery.Data}"
+            );*/
         }
     }
 }
