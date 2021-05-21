@@ -7,25 +7,27 @@ namespace Hookah_Advisor.Repositories
 {
     public class TobaccoRepository : IItemRepository<Tobacco>
     {
-        private readonly Dictionary<int, Tobacco> _tobaccoDatabase = new()
-        {
-            {
-                1,
-                new Tobacco(1, "Банановое говно", "banana mama with shit's smell", new List<string> {"Фрукты", "говно"},
-                    new List<string> {"банан", "говно"})
-            }
-        };
-
+        private readonly Dictionary<int, Tobacco> _tobaccoDatabase;
+        private readonly TableParser _tableParser;
 
         public TobaccoRepository()
         {
-            // parse Json
+            _tableParser = new TableParser("table_v2.json");
+            _tobaccoDatabase = _tableParser.GetTobaccosFromJson();
         }
 
 
         public Tobacco GetItemById(int itemId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                return _tobaccoDatabase[itemId];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new KeyNotFoundException();
+            }
         }
 
         public void AddItem(Tobacco item)
@@ -45,7 +47,7 @@ namespace Hookah_Advisor.Repositories
 
         public void Save()
         {
-            throw new System.NotImplementedException();
+            _tableParser.WriteToJson(_tobaccoDatabase);
         }
 
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
@@ -67,7 +69,6 @@ namespace Hookah_Advisor.Repositories
 
         public List<Tobacco> RecommendTobacco()
         {
-
             return null;
         }
     }

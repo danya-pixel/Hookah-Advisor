@@ -18,8 +18,9 @@ namespace Hookah_Advisor
         private static UserRepository userRepository = new UserRepository();
         private static TobaccoRepository tobaccoRepository = new TobaccoRepository();
         private const string buttonSearch = "Поиск";
-        private const string buttonRecomenations = "Рекомендации";
+        private const string buttonRecomendations = "Рекомендации";
         private const string buttonHistory = "История";
+        private static readonly string[] YesOrNoKeyboard = {"Да", "Нет"};
 
         static void Main()
         {
@@ -79,9 +80,9 @@ namespace Hookah_Advisor
                         chatId: message.Chat,
                         text: $"К сожалению, у меня нет табака с таким вкусом :c");
                 }
-                else PrintArray(message.Chat, TobaccoToString(resultRequest));
+                else PrintTobaccoToKeyboard(message.Chat, resultRequest);
             }
-            
+
             if (message.Text == "Поиск")
             {
                 botClient.SendTextMessageAsync(
@@ -93,15 +94,19 @@ namespace Hookah_Advisor
 
             if (userRepository.GetUserCondition(userId).GetCondition() == userCondition.recommendation)
             {
-                //questionNumber = 1 и тд
+                //userRepository.GetUserCondition(userId).GetQuestionNumber() == 
             }
-            
+
             if (message.Text == "Рекомендации")
             {
                 userRepository.UpdateUserCondition(userId, userCondition.recommendation);
                 userRepository.UpdateUserQuestionNumber(userId, 0);
-                
-                //отправить нулевой вопрос про холодок
+
+                botClient.SendTextMessageAsync(
+                    chatId: message.Chat,
+                    text: $"Тебя интересует табак с холодком?");
+                PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
+                userRepository.UpdateUserQuestionNumber(userId, 1);
             }
         }
 
@@ -149,9 +154,17 @@ namespace Hookah_Advisor
             return array;
         }
 
-        public static async void PrintArray(Chat message, string[] array)
+        public static async void PrintTobaccoToKeyboard(Chat message, List<Tobacco> tobaccos)
         {
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array));
+            var array = TobaccoToString(tobaccos);
+            var idTobaccos = new List<int>();
+
+            foreach (var tobacco in tobaccos)
+            {
+                idTobaccos.Add(tobacco.id);
+            }
+
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForSearch(array, idTobaccos));
             Console.WriteLine("преобразую листы в массив");
             await botClient.SendTextMessageAsync(
                 chatId: message.Id,
@@ -160,7 +173,7 @@ namespace Hookah_Advisor
             );
         }
 
-        private static InlineKeyboardButton[][] GetInlineKeyboard(string[] stringArray)
+        private static InlineKeyboardButton[][] GetInlineKeyboardForSearch(string[] stringArray, List<int> idTobaccos)
         {
             var keyboardInline = new InlineKeyboardButton[stringArray.Length][];
 
@@ -172,7 +185,7 @@ namespace Hookah_Advisor
                     {
                         Text = stringArray[i],
                         CallbackData =
-                            "Some Callback Data" //хз почему, но без этой строчки бот падает из-за того что не может парсить idk
+                            "tobaccoFromRequest " + idTobaccos[i]
                     }
                 };
             }
@@ -180,18 +193,35 @@ namespace Hookah_Advisor
             return keyboardInline;
         }
 
-        static async Task SendInlineKeyboard(Message message)
+        public static async void PrintAnswerOptionsToKeyboard(Chat message, string[] array)
         {
-            await botClient.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
-            await Task.Delay(500);
-
-            // Simulate longer running task
-
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForRecomendation(array));
+            Console.WriteLine("преобразую листы в массив");
             await botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "говно",
-                replyMarkup: GetButtons()
+                chatId: message.Id,
+                text: "Выбирай: ",
+                replyMarkup: keyboardMarkup
             );
+        }
+
+        private static InlineKeyboardButton[][] GetInlineKeyboardForRecomendation(string[] stringArray)
+        {
+            var keyboardInline = new InlineKeyboardButton[stringArray.Length][];
+
+            for (var i = 0; i < stringArray.Length; i++)
+            {
+                keyboardInline[i] = new InlineKeyboardButton[]
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = stringArray[i],
+                        CallbackData =
+                            "yes_no_" + i
+                    }
+                };
+            }
+
+            return keyboardInline;
         }
 
         private static IReplyMarkup GetButtons()
@@ -202,7 +232,7 @@ namespace Hookah_Advisor
                 {
                     new List<KeyboardButton>
                     {
-                        new KeyboardButton {Text = buttonSearch}, new KeyboardButton {Text = buttonRecomenations},
+                        new KeyboardButton {Text = buttonSearch}, new KeyboardButton {Text = buttonRecomendations},
                         new KeyboardButton {Text = buttonHistory}
                     }
                 },
@@ -214,7 +244,14 @@ namespace Hookah_Advisor
             CallbackQueryEventArgs callbackQueryEventArgs)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
-            switch (callbackQuery.Id)
+            var callbackData = callbackQuery.Data;
+            var keyboardCondition = callbackData.Split(' ')[0];
+
+            if (keyboardCondition == "tobaccoFromRequest")
+            {
+            }
+
+            if (keyboardCondition == "")
             {
             }
 
