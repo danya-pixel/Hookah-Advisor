@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor.Repositories
@@ -12,8 +11,8 @@ namespace Hookah_Advisor.Repositories
 
         public TobaccoRepository()
         {
-            _tableParser = new TableParser("table_v2.json");
-            _tobaccoDatabase = _tableParser.GetTobaccosFromJson();
+            _tableParser = new TableParser();
+            _tobaccoDatabase = _tableParser.LoadJson("table_v2.json");
         }
 
 
@@ -40,14 +39,9 @@ namespace Hookah_Advisor.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void UpdateItem(Tobacco item)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void Save()
         {
-            _tableParser.WriteToJson(_tobaccoDatabase);
+            TableParser.WriteToJson(_tobaccoDatabase, "table_v2_test.json");
         }
 
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
@@ -56,11 +50,10 @@ namespace Hookah_Advisor.Repositories
             Console.WriteLine("начинаю поиск");
             foreach (var (id, tobacco) in _tobaccoDatabase)
             {
-                if (tobacco.tastes.Contains(userRequest))
-                {
-                    tobaccoFromRequest.Add(tobacco);
-                    Console.WriteLine(tobacco.name);
-                }
+                if (!tobacco.tastes.Contains(userRequest)) continue;
+
+                tobaccoFromRequest.Add(tobacco);
+                Console.WriteLine(tobacco.name);
             }
 
             Console.WriteLine("сейчас кину список че нашёл");
