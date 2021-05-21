@@ -63,7 +63,7 @@ namespace Hookah_Advisor
                         UserRepository.UpdateUserCondition(userId, userCondition.none);
                         UserRepository.UpdateUserQuestionNumber(userId, 0);
                     }
-                    
+
                     break;
                 }
                 case "/help":
