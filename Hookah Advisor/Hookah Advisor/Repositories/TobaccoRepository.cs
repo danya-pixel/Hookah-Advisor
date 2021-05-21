@@ -9,6 +9,7 @@ namespace Hookah_Advisor.Repositories
     {
         private readonly Dictionary<int, Tobacco> _tobaccoDatabase;
         private readonly IParser<Tobacco> _tobaccoParser;
+
         public TobaccoRepository(IParser<Tobacco> tobaccoParser)
         {
             _tobaccoParser = tobaccoParser;
@@ -37,12 +38,13 @@ namespace Hookah_Advisor.Repositories
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
             var tobaccoFromRequest = new List<Tobacco>();
-            foreach (var (id, tobacco) in _tobaccoDatabase)
+            foreach (var (_, tobacco) in _tobaccoDatabase)
             {
                 if (!tobacco.tastes.Contains(userRequest)) continue;
 
                 tobaccoFromRequest.Add(tobacco);
             }
+
             return tobaccoFromRequest;
         }
 
