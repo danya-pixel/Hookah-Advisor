@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor
@@ -7,14 +8,16 @@ namespace Hookah_Advisor
     {
         public int Id { get; }
         public string UserName { get; set; } //should be public for Serializer
+        public HashSet<int> SmokingLater { get; set; } 
 
-        private readonly Condition _condition;
+        public readonly Condition Condition;
 
         public User(int id, string userName)
         {
             Id = id;
             UserName = userName;
-            _condition = new Condition(userCondition.none, 0);
+            Condition = new Condition(userCondition.none, 0);
+            SmokingLater = new HashSet<int>();
         }
 
         public void SetUserName(string newUserName)
@@ -24,22 +27,22 @@ namespace Hookah_Advisor
 
         public void SetUserCondition(userCondition userCondition)
         {
-            _condition.SetCondition(userCondition);
+            Condition.SetCondition(userCondition);
         }
 
         public void SetUserQuestionNumber(int questionNumber)
         {
-            _condition.SetQuestionNumber(questionNumber);
+            Condition.SetQuestionNumber(questionNumber);
         }
 
         public Condition GetUserCondition()
         {
-            return _condition;
+            return Condition;
         }
 
         public int GetUserQuestionNumber()
         {
-            return _condition.GetQuestionNumber();
+            return Condition.GetQuestionNumber();
         }
     }
 }

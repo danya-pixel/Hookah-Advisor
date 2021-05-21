@@ -19,7 +19,7 @@ namespace Hookah_Advisor
         private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
-        private const string ButtonHistory = "История";
+        private const string ButtonHistory = "Я хотел покурить";
         private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
         static void Main()
@@ -39,6 +39,7 @@ namespace Hookah_Advisor
             Console.ReadKey();
 
             _botClient.StopReceiving();
+            UserRepository.Save();
         }
 
         private static async void BotOnMessage(object sender, MessageEventArgs e)
@@ -64,6 +65,7 @@ namespace Hookah_Advisor
                         UserRepository.UpdateUserQuestionNumber(userId, 0);
                     }
 
+
                     break;
                 }
                 case "/help":
@@ -73,14 +75,14 @@ namespace Hookah_Advisor
                     UserRepository.Save();
                     break;
 
-                case "Поиск":
+                case ButtonSearch:
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
                         $"Напиши, какой вкус ты ищешь:");
 
                     UserRepository.UpdateUserCondition(userId, userCondition.search);
                     break;
-                case "Рекомендации":
+                case ButtonRecommendations:
                     UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
 
@@ -89,6 +91,17 @@ namespace Hookah_Advisor
                         $"Тебя интересует табак с холодком?");
                     PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
+                    break;
+                case ButtonHistory:
+                    var user = UserRepository.GetUserById(message.From.Id);
+                    var tobaccos = user.SmokingLater.Select(t => TobaccoRepository.GetItemById(t));
+
+                    await _botClient.SendTextMessageAsync(
+                        message.Chat,
+                        $"Ты хотел покурить: ",
+                        replyMarkup: new InlineKeyboardMarkup(GetInlineKeyboard(tobaccos.Select(t => t.ToString()),
+                            user.SmokingLater, "tobaccoFromRequest")));
+
                     break;
                 default:
                     switch (UserRepository.GetUserCondition(userId).GetCondition())
@@ -104,7 +117,8 @@ namespace Hookah_Advisor
                                     message.Chat,
                                     $"К сожалению, у меня нет табака с таким вкусом :c");
                             }
-                            else PrintTobaccoToKeyboard(message.Chat, resultRequest);
+                            else
+                                PrintTobaccoToKeyboard(message.Chat, resultRequest);
 
                             break;
                         }
@@ -178,6 +192,22 @@ namespace Hookah_Advisor
             return keyboardInline;
         }
 
+        private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(string str, T idTobacco,
+            string type)
+        {
+            return new[]
+            {
+                new[]
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = str,
+                        CallbackData = $"{type}_{idTobacco}"
+                    }
+                }
+            };
+        }
+
         public static async void PrintAnswerOptionsToKeyboard(Chat message, List<string> array)
         {
             var keyboardMarkup =
@@ -213,23 +243,58 @@ namespace Hookah_Advisor
             var type = callbackData.Split('_')[0];
             var idTobacco = Convert.ToInt32(callbackData.Split('_')[1]);
             var tobaccoFromTap = TobaccoRepository.GetItemById(idTobacco);
-            var result = $"{tobaccoFromTap}\n\n{tobaccoFromTap.description}"; 
+            var user = UserRepository.GetUserById(callbackQuery.From.Id);
 
-            if (type == "tobaccoFromRequest")
+            switch (type)
             {
-                await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result);
-                await _botClient.AnswerCallbackQueryAsync(
-                    callbackQuery.Id,
-                    $"{tobaccoFromTap}"
-                );
+                case "tobaccoFromRequest":
+                    var result =
+                        $"{tobaccoFromTap}\n{string.Join(" ", tobaccoFromTap.tastes.Select(t => $"#{t}"))}\n\n{tobaccoFromTap.description}";
+                    if (user.SmokingLater.Contains(idTobacco))
+                    {
+                        await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
+                            replyMarkup: new InlineKeyboardMarkup(
+                                GetInlineKeyboard("Я покурил", idTobacco, "un-sm-later")));
+                        await _botClient.AnswerCallbackQueryAsync(
+                            callbackQuery.Id,
+                            $"{tobaccoFromTap}"
+                        );
+                    }
+                    else
+                    {
+                        await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
+                            replyMarkup: new InlineKeyboardMarkup(
+                                GetInlineKeyboard("Покурить позже", idTobacco, "sm-later")));
+                        await _botClient.AnswerCallbackQueryAsync(
+                            callbackQuery.Id,
+                            $"{tobaccoFromTap}"
+                        );
+                    }
+
+                    break;
+                case "sm-later":
+                    user.SmokingLater.Add(idTobacco);
+                    await _botClient.AnswerCallbackQueryAsync(
+                        callbackQuery.Id,
+                        $"Покумарим {tobaccoFromTap}"
+                    );
+                    await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                        callbackQuery.Message.MessageId, callbackQuery.Message.Text,
+                        replyMarkup: new InlineKeyboardMarkup(
+                            GetInlineKeyboard("Я покурил", idTobacco, "un-sm-later")));
+                    break;
+                case "un-sm-later":
+                    user.SmokingLater.Remove(idTobacco);
+                    await _botClient.AnswerCallbackQueryAsync(
+                        callbackQuery.Id,
+                        $"Я умер от {tobaccoFromTap}"
+                    );
+                    await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                        callbackQuery.Message.MessageId, callbackQuery.Message.Text,
+                        replyMarkup: new InlineKeyboardMarkup(
+                            GetInlineKeyboard("Покурить позже", idTobacco, "sm-later")));
+                    break;
             }
-
-
-            if (type == "")
-            {
-            }
-
-           
         }
     }
 }

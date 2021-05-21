@@ -48,7 +48,6 @@ namespace Hookah_Advisor.Repositories
 
             GetUserById(userId).SetUserCondition(condition);
         }
-
         public void UpdateUserQuestionNumber(int userId, int questionNumber)
         {
             if (!IsUserRegistered(userId))
