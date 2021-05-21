@@ -64,7 +64,7 @@ namespace Hookah_Advisor.Repositories
 
         public IEnumerable<User> GetUsers()
         {
-            return _usersDatabase.Cast<User>();
+            return _usersDatabase.Select(pair => pair.Value);
         }
 
         public User GetUserById(int userId)

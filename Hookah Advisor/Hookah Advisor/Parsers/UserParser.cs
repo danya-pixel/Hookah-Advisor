@@ -9,12 +9,7 @@ namespace Hookah_Advisor.Parsers
     {
         public void Write(Dictionary<int,User> database,string fileName)
         {
-            //var userList = database.Cast<User>().ToList();
-            var userList = new List<User>();
-            foreach (var (_,user) in database)
-            {
-                userList.Add(user);
-            }
+            var userList = database.Select(pair => pair.Value);
             File.WriteAllText("../../../" + fileName, JsonConvert.SerializeObject(userList));
         }
         
