@@ -26,5 +26,10 @@ namespace Hookah_Advisor
         public Tobacco()
         {
         }
+
+        public override string ToString()
+        {
+            return $"{brand}: {name}";
+        }
     }
 }

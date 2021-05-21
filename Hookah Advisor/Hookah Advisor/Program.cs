@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -18,7 +19,7 @@ namespace Hookah_Advisor
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
         private const string ButtonHistory = "История";
-        private static readonly string[] YesOrNoKeyboard = {"Да", "Нет"};
+        private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
         static void Main()
         {
@@ -72,8 +73,8 @@ namespace Hookah_Advisor
 
                 case "Поиск":
                     await _botClient.SendTextMessageAsync(
-                        chatId: message.Chat,
-                        text: $"Напиши, какой вкус ты ищешь:");
+                        message.Chat,
+                        $"Напиши, какой вкус ты ищешь:");
 
                     UserRepository.UpdateUserCondition(userId, userCondition.search);
                     break;
@@ -82,8 +83,8 @@ namespace Hookah_Advisor
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
 
                     await _botClient.SendTextMessageAsync(
-                        chatId: message.Chat,
-                        text: $"Тебя интересует табак с холодком?");
+                        message.Chat,
+                        $"Тебя интересует табак с холодком?");
                     PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
@@ -98,8 +99,8 @@ namespace Hookah_Advisor
                             if (resultRequest.Count == 0)
                             {
                                 await _botClient.SendTextMessageAsync(
-                                    chatId: message.Chat,
-                                    text: $"К сожалению, у меня нет табака с таким вкусом :c");
+                                    message.Chat,
+                                    $"К сожалению, у меня нет табака с таким вкусом :c");
                             }
                             else PrintTobaccoToKeyboard(message.Chat, resultRequest);
 
@@ -108,10 +109,8 @@ namespace Hookah_Advisor
 
                         case userCondition.recommendation:
                             break;
-
-                        default:
-                            break;
                     }
+
                     break;
             }
         }
@@ -119,32 +118,32 @@ namespace Hookah_Advisor
         static async void SendStartMessage(Chat chat, string userFirstName)
         {
             await _botClient.SendTextMessageAsync(
-                chatId: chat,
-                text: $"Привет {userFirstName},\n" +
-                      "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
-                      "Этот бот помогает найти табак для кальяна под твои предпочтения.💨 \n " + "\n" +
-                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞 \n" + "\n" +
-                      " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
-                      " «Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории. \n" + "\n" +
-                      " «История📜» хранит все оцененные тобой табаки. \n" + "\n" +
-                      " Жми на нужную тебе кнопку снизу!👇");
+                chat,
+                $"Привет {userFirstName},\n" +
+                "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
+                "Этот бот помогает найти табак для кальяна под твои предпочтения.💨 \n " + "\n" +
+                "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞 \n" + "\n" +
+                " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
+                " «Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории. \n" + "\n" +
+                " «История📜» хранит все оцененные тобой табаки. \n" + "\n" +
+                " Жми на нужную тебе кнопку снизу!👇");
 
             await _botClient.SendTextMessageAsync(
-                chatId: chat,
-                text: $"Что тебе интересно?",
+                chat,
+                $"Что тебе интересно?",
                 replyMarkup: GetButtons());
         }
 
         static async void SendHelpMessage(Chat chat)
         {
             await _botClient.SendTextMessageAsync(
-                chatId: chat,
-                text: $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
-                      "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
-                      "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
-                      "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" + "\n" +
-                      "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
-                      "Жми на нужную тебе кнопку снизу!👇\n");
+                chat,
+                $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
+                "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
+                "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
+                "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" + "\n" +
+                "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
+                "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
         public static string[] TobaccoToString(List<Tobacco> tobaccos)
@@ -162,72 +161,45 @@ namespace Hookah_Advisor
 
         public static async void PrintTobaccoToKeyboard(Chat message, List<Tobacco> tobaccos)
         {
-            var array = TobaccoToString(tobaccos);
-            var idTobaccos = new List<int>();
+            var array = tobaccos.Select(t => t.ToString());
+            var idTobaccos = tobaccos.Select(t => t.id);
 
-            foreach (var tobacco in tobaccos)
-            {
-                idTobaccos.Add(tobacco.id);
-            }
-
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForSearch(array, idTobaccos));
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, "tobaccoFromRequest"));
             Console.WriteLine("преобразую листы в массив");
             await _botClient.SendTextMessageAsync(
-                chatId: message.Id,
-                text: "Выбирай: ",
+                message.Id,
+                "Выбирай: ",
                 replyMarkup: keyboardMarkup
             );
         }
 
-        private static InlineKeyboardButton[][] GetInlineKeyboardForSearch(string[] stringArray, List<int> idTobaccos)
+        private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(
+            IEnumerable<string> stringArray,
+            IEnumerable<T> idTobaccos, string type)
         {
-            var keyboardInline = new InlineKeyboardButton[stringArray.Length][];
-
-            for (var i = 0; i < stringArray.Length; i++)
-            {
-                keyboardInline[i] = new InlineKeyboardButton[]
+            var keyboardInline = stringArray
+                .Zip(idTobaccos, (str, idTobacco) => new[]
                 {
                     new InlineKeyboardButton
                     {
-                        Text = stringArray[i],
-                        CallbackData =
-                            "tobaccoFromRequest_" + idTobaccos[i]
+                        Text = str,
+                        CallbackData = $"{type}_{idTobacco}"
                     }
-                };
-            }
+                });
 
             return keyboardInline;
         }
 
-        public static async void PrintAnswerOptionsToKeyboard(Chat message, string[] array)
+        public static async void PrintAnswerOptionsToKeyboard(Chat message, List<string> array)
         {
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboardForRecomendation(array));
+            var keyboardMarkup =
+                new InlineKeyboardMarkup(GetInlineKeyboard(array, Enumerable.Range(0, array.Count), "yesno_"));
             Console.WriteLine("преобразую листы в массив");
             await _botClient.SendTextMessageAsync(
-                chatId: message.Id,
-                text: "Выбирай: ",
+                message.Id,
+                "Выбирай: ",
                 replyMarkup: keyboardMarkup
             );
-        }
-
-        private static InlineKeyboardButton[][] GetInlineKeyboardForRecomendation(string[] stringArray)
-        {
-            var keyboardInline = new InlineKeyboardButton[stringArray.Length][];
-
-            for (var i = 0; i < stringArray.Length; i++)
-            {
-                keyboardInline[i] = new InlineKeyboardButton[]
-                {
-                    new InlineKeyboardButton
-                    {
-                        Text = stringArray[i],
-                        CallbackData =
-                            "yesno_" + i
-                    }
-                };
-            }
-
-            return keyboardInline;
         }
 
         private static IReplyMarkup GetButtons()
@@ -236,7 +208,7 @@ namespace Hookah_Advisor
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>
+                    new()
                     {
                         new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations},
                         new KeyboardButton {Text = ButtonHistory}
@@ -262,13 +234,13 @@ namespace Hookah_Advisor
             }
 
             await _botClient.AnswerCallbackQueryAsync(
-                callbackQueryId: callbackQuery.Id,
-                text: $"Received {callbackQuery.Data}"
+                callbackQuery.Id,
+                $"Received {callbackQuery.Data}"
             );
 
             await _botClient.SendTextMessageAsync(
-                chatId: callbackQuery.Message.Chat.Id,
-                text: $"Received {callbackQuery.Data}"
+                callbackQuery.Message.Chat.Id,
+                $"Received {callbackQuery.Data}"
             );
         }
     }

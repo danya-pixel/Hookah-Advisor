@@ -57,10 +57,7 @@ namespace Hookah_Advisor.Repositories
 
         public IEnumerable<User> GetUsers()
         {
-            foreach (var (_, user) in UsersByIdDict)
-            {
-                yield return user;
-            }
+            return UsersByIdDict.Cast<User>();
         }
 
         public User GetUserById(int userId)
@@ -88,7 +85,7 @@ namespace Hookah_Advisor.Repositories
         public void SaveToJson(string fileName)
         {
             var convertedDictionary = UsersByIdDict.ToDictionary(item => item.Key, item => item.Value.GetUserName());
-            using var file = File.CreateText("../../../" + fileName); //should be implemented
+            using var file = File.CreateText("../../../" + fileName);
             var serializer = new JsonSerializer();
             serializer.Serialize(file, convertedDictionary);
         }
