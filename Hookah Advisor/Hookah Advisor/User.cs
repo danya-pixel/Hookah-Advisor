@@ -5,21 +5,21 @@ namespace Hookah_Advisor
 {
     public class User
     {
-        private int id;
-        private string userName { get; set; }
+        public int Id { get; set; }
+        public string UserName { get; set; }
 
         private Condition condition;
 
         public User(int id, string userName)
         {
-            this.id = id;
-            this.userName = userName;
+            Id = id;
+            UserName = userName;
             condition = new Condition(userCondition.none, 0);
         }
 
         public void SetUserName(string newUserName)
         {
-            userName = newUserName;
+            UserName = newUserName;
         }
 
         public void SetUserCondition(userCondition userCondition)
@@ -30,11 +30,6 @@ namespace Hookah_Advisor
         public void SetUserQuestionNumber(int questionNumber)
         {
             condition.SetQuestionNumber(questionNumber);
-        }
-
-        public string GetUserName()
-        {
-            return userName;
         }
 
         public Condition GetUserCondition()

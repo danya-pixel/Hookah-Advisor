@@ -1,23 +1,3 @@
-﻿# Default ignored files
-/shelf/
-/workspace.xml
-# Rider ignored files
-/modules.xml
-/.idea.Hookah Advisor.iml
-/projectSettingsUpdater.xml
-/contentModel.xml
-# Datasource local storage ignored files
-/../../../../../../../../../:\Users\charr\Documents\Hookah-Advisor\Hookah Advisor\.idea\.idea.Hookah Advisor\.idea/dataSources/
-/dataSources.local.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# .idea
-.idea
-#git file
-Hookah Advisor
-#obj 
-Hookah Advisor/obj
-#bin
-Hookah\ Advisor/.idea/
+﻿Hookah\ Advisor/.idea/
 Hookah\ Advisor/Hookah\ Advisor/obj/
 Hookah\ Advisor/Hookah\ Advisor/bin/
