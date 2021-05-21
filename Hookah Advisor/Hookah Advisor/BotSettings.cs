@@ -7,4 +7,4 @@ namespace Hookah_Advisor
         public static string Name { get; set; } = "<BOT_NAME>";
         public static string Token { get; set; } = Environment.GetEnvironmentVariable("TELEGRAM_TOKEN");
     }
-}
+}// не могу
