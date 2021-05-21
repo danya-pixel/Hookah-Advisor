@@ -76,7 +76,7 @@ namespace Hookah_Advisor
                 var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text.ToLower());
                 if (resultRequest.Count == 0)
                 {
-                    botClient.SendTextMessageAsync(
+                    await botClient.SendTextMessageAsync(
                         chatId: message.Chat,
                         text: $"К сожалению, у меня нет табака с таким вкусом :c");
                 }
@@ -85,7 +85,7 @@ namespace Hookah_Advisor
 
             if (message.Text == "Поиск")
             {
-                botClient.SendTextMessageAsync(
+                await botClient.SendTextMessageAsync(
                     chatId: message.Chat,
                     text: $"Напиши, какой вкус ты ищешь:");
 
@@ -102,7 +102,7 @@ namespace Hookah_Advisor
                 userRepository.UpdateUserCondition(userId, userCondition.recommendation);
                 userRepository.UpdateUserQuestionNumber(userId, 0);
 
-                botClient.SendTextMessageAsync(
+                await botClient.SendTextMessageAsync(
                     chatId: message.Chat,
                     text: $"Тебя интересует табак с холодком?");
                 PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
@@ -125,7 +125,8 @@ namespace Hookah_Advisor
 
             await botClient.SendTextMessageAsync(
                 chatId: chat,
-                text: $"Что тебе интересно?");
+                text: $"Что тебе интересно?",
+                replyMarkup: GetButtons());
         }
 
         static async void SendHelpMessage(Chat chat)
@@ -145,10 +146,9 @@ namespace Hookah_Advisor
             Console.WriteLine("преобразую листы в массив");
             var array = new string[tobaccos.Count];
             Console.WriteLine(tobaccos.Count);
-            for (int i = 0; i < tobaccos.Count; i++)
+            for (var i = 0; i < tobaccos.Count; i++)
             {
-                array[i] = tobaccos[i].name;
-                //Console.WriteLine(array[i]);
+                array[i] = tobaccos[i].brand + ": " + tobaccos[i].name;
             }
 
             return array;
@@ -185,7 +185,7 @@ namespace Hookah_Advisor
                     {
                         Text = stringArray[i],
                         CallbackData =
-                            "tobaccoFromRequest " + idTobaccos[i]
+                            "tobaccoFromRequest_" + idTobaccos[i]
                     }
                 };
             }
@@ -216,14 +216,14 @@ namespace Hookah_Advisor
                     {
                         Text = stringArray[i],
                         CallbackData =
-                            "yes_no_" + i
+                            "yesno_" + i
                     }
                 };
             }
 
             return keyboardInline;
         }
-
+        
         private static IReplyMarkup GetButtons()
         {
             return new ReplyKeyboardMarkup
@@ -245,7 +245,7 @@ namespace Hookah_Advisor
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackData = callbackQuery.Data;
-            var keyboardCondition = callbackData.Split(' ')[0];
+            var keyboardCondition = callbackData.Split('_')[0];
 
             if (keyboardCondition == "tobaccoFromRequest")
             {
