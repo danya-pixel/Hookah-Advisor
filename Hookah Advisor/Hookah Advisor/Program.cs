@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hookah_Advisor.Parsers;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -13,8 +14,8 @@ namespace Hookah_Advisor
     class Program
     {
         static ITelegramBotClient _botClient;
-        private static readonly UserRepository UserRepository = new();
-        private static readonly TobaccoRepository TobaccoRepository = new();
+        private static readonly UserRepository UserRepository = new(new UserParser());
+        private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
         private const string ButtonHistory = "История";
@@ -67,7 +68,7 @@ namespace Hookah_Advisor
                     SendHelpMessage(message.Chat);
                     UserRepository.UpdateUserCondition(userId, userCondition.none);
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
-                    UserRepository.SaveToJson("users.json");
+                    UserRepository.Save();
                     break;
 
                 case "Поиск":

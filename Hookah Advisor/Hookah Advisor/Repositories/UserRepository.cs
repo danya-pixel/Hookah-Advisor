@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using Hookah_Advisor.Parsers;
 using Hookah_Advisor.Repository_Interfaces;
-using Newtonsoft.Json;
+
 
 namespace Hookah_Advisor.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static readonly Dictionary<int, User> UsersByIdDict = new();
+        private readonly Dictionary<int, User> _usersDatabase;
+        private readonly IParser<User> _userParser;
+
+        public UserRepository(IParser<User> userParser)
+        {
+           _userParser = userParser;
+           _usersDatabase = userParser.Load("users.json");
+        }
 
         public void AddUserById(int userId, string userName)
         {
             var newUser = new User(userId, userName);
             if (!IsUserRegistered(userId))
-                UsersByIdDict[userId] = newUser;
+                _usersDatabase[userId] = newUser;
             Console.WriteLine($"User {userName} has been added");
         }
 
@@ -23,7 +29,7 @@ namespace Hookah_Advisor.Repositories
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            UsersByIdDict.Remove(userId);
+            _usersDatabase.Remove(userId);
         }
 
         public void UpdateUsername(int userId, string newUserName)
@@ -38,26 +44,26 @@ namespace Hookah_Advisor.Repositories
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            
+
             GetUserById(userId).SetUserCondition(condition);
         }
-        
+
         public void UpdateUserQuestionNumber(int userId, int questionNumber)
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            
+
             GetUserById(userId).SetUserQuestionNumber(questionNumber);
         }
-        
+
         public bool IsUserRegistered(int userId)
         {
-            return UsersByIdDict.ContainsKey(userId);
+            return _usersDatabase.ContainsKey(userId);
         }
 
         public IEnumerable<User> GetUsers()
         {
-            foreach (var (_, user) in UsersByIdDict)
+            foreach (var (_, user) in _usersDatabase)
             {
                 yield return user;
             }
@@ -67,14 +73,19 @@ namespace Hookah_Advisor.Repositories
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
-            return UsersByIdDict[userId];
+            return _usersDatabase[userId];
         }
 
         public Condition GetUserCondition(int userId)
         {
             return GetUserById(userId).GetUserCondition();
         }
-        
+
+        public void Save()
+        {
+            _userParser.Write(_usersDatabase, "users.json");
+        }
+
         /// <summary>
         /// Метод, обрабатывающий событие, когда репозиторий обращается по userId
         /// к пользователю, которого не существует
@@ -85,7 +96,7 @@ namespace Hookah_Advisor.Repositories
             throw new ArgumentException("User does not exist");
         }
 
-        public void SaveToJson(string fileName)
+        /*public void Save(string fileName)
         {
             var convertedDictionary = UsersByIdDict.ToDictionary(item => item.Key, item => item.Value.GetUserName());
             using var file = File.CreateText("../../../" + fileName); //should be implemented
@@ -93,7 +104,7 @@ namespace Hookah_Advisor.Repositories
             serializer.Serialize(file, convertedDictionary);
         }
 
-        public void LoadFromJson(string fileName)
+        public void Load(string fileName)
         {
             var str = File.ReadAllText("../../../" + fileName);
             var usersDict = JsonConvert.DeserializeObject<Dictionary<int,string>>(str);
@@ -103,6 +114,6 @@ namespace Hookah_Advisor.Repositories
             {
                 AddUserById(id, name);
             }
-        }
+        }*/
     }
 }

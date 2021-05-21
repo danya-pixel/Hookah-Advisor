@@ -3,11 +3,11 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Hookah_Advisor
+namespace Hookah_Advisor.Parsers
 {
-    public class TableParser
+    public class TobaccoParser:IParser<Tobacco>
     {
-        public Dictionary<int, Tobacco> LoadJson(string fileName)
+        public Dictionary<int, Tobacco> Load(string fileName)
         {
             var str = File.ReadAllText("../../../" + fileName);
             var tobaccoList = JsonConvert.DeserializeObject<List<Tobacco>>(str);
@@ -22,7 +22,7 @@ namespace Hookah_Advisor
 
             return tobaccoDict;
         }
-        public static void WriteToJson(Dictionary<int, Tobacco> database,string fileName)
+        public void Write(Dictionary<int, Tobacco> database,string fileName)
         {
             var tobaccoList = database.Cast<Tobacco>().ToList();
             File.WriteAllText("../../../" + fileName, JsonConvert.SerializeObject(tobaccoList));

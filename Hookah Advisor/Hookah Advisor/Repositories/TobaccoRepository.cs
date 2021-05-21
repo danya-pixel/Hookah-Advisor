@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Hookah_Advisor.Parsers;
 using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor.Repositories
@@ -7,11 +8,11 @@ namespace Hookah_Advisor.Repositories
     public class TobaccoRepository : IItemRepository<Tobacco>
     {
         private readonly Dictionary<int, Tobacco> _tobaccoDatabase;
-
-        public TobaccoRepository()
+        private readonly IParser<Tobacco> _tobaccoParser;
+        public TobaccoRepository(IParser<Tobacco> tobaccoParser)
         {
-            var tableParser = new TableParser();
-            _tobaccoDatabase = tableParser.LoadJson("table_v2.json");
+            _tobaccoParser = tobaccoParser;
+            _tobaccoDatabase = tobaccoParser.Load("table_v2.json");
         }
 
 
@@ -30,7 +31,7 @@ namespace Hookah_Advisor.Repositories
 
         public void Save()
         {
-            TableParser.WriteToJson(_tobaccoDatabase, "table_v2_test.json");
+            _tobaccoParser.Write(_tobaccoDatabase, "table_v2_test.json");
         }
 
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
