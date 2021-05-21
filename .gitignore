@@ -12,7 +12,7 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 # .idea
-*.idea
+.idea
 #git file
 Hookah\ Advisor/git
 #obj 
