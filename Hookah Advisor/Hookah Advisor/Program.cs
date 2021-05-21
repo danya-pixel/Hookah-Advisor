@@ -213,8 +213,7 @@ namespace Hookah_Advisor
             var type = callbackData.Split('_')[0];
             var idTobacco = Convert.ToInt32(callbackData.Split('_')[1]);
             var tobaccoFromTap = TobaccoRepository.GetItemById(idTobacco);
-            // var result = tobaccoFromTap.brand + ": " + tobaccoFromTap.name + "\n" + "\n" + tobaccoFromTap.description;//прикрутить перегруженный tostring
-            var result = $"{tobaccoFromTap}\n\n{tobaccoFromTap.description}"; //прикрутить перегруженный tostring
+            var result = $"{tobaccoFromTap}\n\n{tobaccoFromTap.description}"; 
 
             if (type == "tobaccoFromRequest")
             {
@@ -230,10 +229,7 @@ namespace Hookah_Advisor
             {
             }
 
-            /*await _botClient.AnswerCallbackQueryAsync(
-                callbackQueryId: callbackQuery.Id,
-                text: $"Received {callbackQuery.Data}"
-            );*/
+           
         }
     }
 }
