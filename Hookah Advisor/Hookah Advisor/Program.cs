@@ -20,7 +20,7 @@ namespace Hookah_Advisor
         private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
-        private const string ButtonHistory = "Я хотел покурить";
+        private const string ButtonSmokeLater = "Покурить позже";
         private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
         static void Main()
@@ -48,7 +48,7 @@ namespace Hookah_Advisor
             var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
-            
+
             if (message.Type == MessageType.Text && message.Text == "🍌")
                 message.Text = "Банан";
             if (message.Type == MessageType.Sticker && message.Sticker.SetName.ToLower().Contains("banan"))
@@ -59,6 +59,7 @@ namespace Hookah_Advisor
                     message.Chat,
                     $"К сожалению, у меня нет табака с таким вкусом :c");
             }
+
             switch (message.Text)
             {
                 case "/start":
@@ -102,15 +103,23 @@ namespace Hookah_Advisor
                     PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
-                case ButtonHistory:
+                case ButtonSmokeLater:
                     var user = UserRepository.GetUserById(message.From.Id);
-                    var tobaccos = user.SmokingLater.Select(t => TobaccoRepository.GetItemById(t));
-
-                    await _botClient.SendTextMessageAsync(
-                        message.Chat,
-                        $"Ты хотел покурить: ",
-                        replyMarkup: new InlineKeyboardMarkup(GetInlineKeyboard(tobaccos.Select(t => t.ToString()),
-                            user.SmokingLater, "tobaccoFromRequest")));
+                    var tobaccos = user.SmokeLater.Select(t => TobaccoRepository.GetItemById(t));
+                    if (tobaccos.Count() == 0)
+                    {
+                        await _botClient.SendTextMessageAsync(
+                            message.Chat,
+                            $"У тебя нет планов на покур😤. \n\nДобавь что-нибудь😈😈😈");
+                    }
+                    else
+                    {
+                        await _botClient.SendTextMessageAsync(
+                            message.Chat,
+                            $"Ты хотел покурить: ",
+                            replyMarkup: new InlineKeyboardMarkup(GetInlineKeyboard(tobaccos.Select(t => t.ToString()),
+                                user.SmokeLater, "tobaccoFromRequest")));
+                    }
 
                     break;
                 default:
@@ -148,16 +157,12 @@ namespace Hookah_Advisor
                 $"Привет {userFirstName},\n" +
                 "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
                 "Этот бот помогает найти табак для кальяна под твои предпочтения.💨 \n " + "\n" +
-                "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞 \n" + "\n" +
+                "Курение кредит Вашему здоровью! Используя этот бот, вы подтверждаете свой совершеннолетний возраст.🔞\n" +
+                "\n" +
                 " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
-                " «Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории. \n" + "\n" +
-                " «История📜» хранит все оцененные тобой табаки. \n" + "\n" +
-                " Жми на нужную тебе кнопку снизу!👇");
-
-            await _botClient.SendTextMessageAsync(
-                chat,
-                $"Что тебе интересно?",
-                replyMarkup: GetButtons());
+                " «Рекомендации⭐️» подсказывают табак на основании опроса. \n" + "\n" +
+                " «Покурить позже📜» хранит все сохранённые тобой табаки. \n" + "\n" +
+                " Жми на нужную тебе кнопку снизу!👇", replyMarkup: GetButtons());
         }
 
         static async void SendHelpMessage(Chat chat)
@@ -165,10 +170,11 @@ namespace Hookah_Advisor
             await _botClient.SendTextMessageAsync(
                 chat,
                 $"Этот бот помогает найти табак для кальяна под твои предпочтения.\n" + "\n" +
-                "Внимание! Данный бот разрешен только лицам, достигшим возраста 18 лет.🔞\n" + "\n" +
+                "Курение кредит Вашему здоровью! Используя этот бот, вы подтверждаете свой совершеннолетний возраст.🔞\n" +
+                "\n" +
                 "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
-                "«Рекомендации⭐️» подсказывают табак под твои предпочтения, основанные на истории.\n" + "\n" +
-                "«История📜» хранит все оцененные тобой табаки.\n" + "\n" +
+                "«Рекомендации⭐️» подсказывают табак на основании опроса.\n" + "\n" +
+                "«Покурить позже📜» хранит все сохранённые тобой табаки.\n" + "\n" +
                 "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
@@ -238,7 +244,7 @@ namespace Hookah_Advisor
                     new()
                     {
                         new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations},
-                        new KeyboardButton {Text = ButtonHistory}
+                        new KeyboardButton {Text = ButtonSmokeLater}
                     }
                 },
                 ResizeKeyboard = true
@@ -271,11 +277,11 @@ namespace Hookah_Advisor
 
                     var result =
                         $"{tobaccoFromTap}\n{string.Join(" ", tags)}\n\n{tobaccoFromTap.description}";
-                    if (user.SmokingLater.Contains(idTobacco))
+                    if (user.SmokeLater.Contains(idTobacco))
                     {
                         await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
                             replyMarkup: new InlineKeyboardMarkup(
-                                GetInlineKeyboard("Я покурил", idTobacco, "un-sm-later")));
+                                GetInlineKeyboard("Я покурил", idTobacco, "unShmokeLater")));
                         await _botClient.AnswerCallbackQueryAsync(
                             callbackQuery.Id,
                             $"{tobaccoFromTap}"
@@ -285,7 +291,7 @@ namespace Hookah_Advisor
                     {
                         await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
                             replyMarkup: new InlineKeyboardMarkup(
-                                GetInlineKeyboard("Покурить позже", idTobacco, "sm-later")));
+                                GetInlineKeyboard("Покурить позже", idTobacco, "shmokeLater")));
                         await _botClient.AnswerCallbackQueryAsync(
                             callbackQuery.Id,
                             $"{tobaccoFromTap}"
@@ -293,8 +299,8 @@ namespace Hookah_Advisor
                     }
 
                     break;
-                case "sm-later":
-                    user.SmokingLater.Add(idTobacco);
+                case "shmokeLater":
+                    user.SmokeLater.Add(idTobacco);
                     await _botClient.AnswerCallbackQueryAsync(
                         callbackQuery.Id,
                         $"Покумарим {tobaccoFromTap}"
@@ -302,18 +308,18 @@ namespace Hookah_Advisor
                     await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                         callbackQuery.Message.MessageId, callbackQuery.Message.Text,
                         replyMarkup: new InlineKeyboardMarkup(
-                            GetInlineKeyboard("Я покурил", idTobacco, "un-sm-later")));
+                            GetInlineKeyboard("Я покурил", idTobacco, "unShmokeLater")));
                     break;
-                case "un-sm-later":
-                    user.SmokingLater.Remove(idTobacco);
+                case "unShmokeLater":
+                    user.SmokeLater.Remove(idTobacco);
                     await _botClient.AnswerCallbackQueryAsync(
                         callbackQuery.Id,
-                        $"Я умер от {tobaccoFromTap}"
+                        $"Покалюмбасили {tobaccoFromTap}"
                     );
                     await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                         callbackQuery.Message.MessageId, callbackQuery.Message.Text,
                         replyMarkup: new InlineKeyboardMarkup(
-                            GetInlineKeyboard("Покурить позже", idTobacco, "sm-later")));
+                            GetInlineKeyboard("Покурить позже", idTobacco, "shmokeLater")));
                     break;
             }
         }
