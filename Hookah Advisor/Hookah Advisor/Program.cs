@@ -96,11 +96,12 @@ namespace Hookah_Advisor
                 case ButtonRecommendations:
                     UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
-
+                        ///TODO 
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
-                        $"Тебя интересует табак с холодком?");
-                    PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
+                        $"К сожалению пока эта функция не работает :c");
+                        //    $"Тебя интересует табак с холодком?");
+                    //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
                 case ButtonSmokeLater:
