@@ -245,11 +245,8 @@ namespace Hookah_Advisor
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new()
-                    {
-                        new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations},
-                        new KeyboardButton {Text = ButtonSmokeLater}, new KeyboardButton {Text = ButtonHistory},
-                    }
+                    new() {new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations}},
+                    new() {new KeyboardButton {Text = ButtonSmokeLater}, new KeyboardButton {Text = ButtonHistory}}
                 },
                 ResizeKeyboard = true
             };
