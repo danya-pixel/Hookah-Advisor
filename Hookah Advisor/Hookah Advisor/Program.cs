@@ -20,8 +20,10 @@ namespace Hookah_Advisor
         private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
+
         private const string ButtonSmokeLater = "Покурить позже";
-        private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
+        //private const string ButtonHistory = "История";
+        //private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
         static void Main()
         {
@@ -96,11 +98,11 @@ namespace Hookah_Advisor
                 case ButtonRecommendations:
                     UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
-                        ///TODO 
+                    ///TODO 
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
                         $"К сожалению пока эта функция не работает :c");
-                        //    $"Тебя интересует табак с холодком?");
+                    //    $"Тебя интересует табак с холодком?");
                     //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
@@ -123,6 +125,10 @@ namespace Hookah_Advisor
                     }
 
                     break;
+
+                // case ButtonHistory:
+                //   break;
+
                 default:
                     switch (UserRepository.GetUserCondition(userId).GetCondition())
                     {
@@ -187,7 +193,7 @@ namespace Hookah_Advisor
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, "tobaccoFromRequest"));
             await _botClient.SendTextMessageAsync(
                 message.Id,
-                "Выбирай: ",
+                "Смотри, что я нашёл:",
                 replyMarkup: keyboardMarkup
             );
         }
