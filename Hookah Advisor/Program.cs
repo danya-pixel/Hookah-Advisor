@@ -99,8 +99,8 @@ namespace Hookah_Advisor
                     break;
 
                 case ButtonRecommendations:
-                    UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
-                    UserRepository.UpdateUserQuestionNumber(userId, 0);
+                    //UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
+                    //UserRepository.UpdateUserQuestionNumber(userId, 0);
                     ///TODO 
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
