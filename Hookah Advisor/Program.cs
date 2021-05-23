@@ -49,7 +49,6 @@ namespace Hookah_Advisor
         {
             var message = e.Message;
             var userId = message.From.Id;
-
             var userFirstName = message.From.FirstName;
 
             if (message.Type != MessageType.Text)
