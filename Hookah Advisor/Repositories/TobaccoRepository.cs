@@ -17,7 +17,6 @@ namespace Hookah_Advisor.Repositories
             _tobaccoDatabase = tobaccoParser.Load("table_v2.json");
         }
 
-
         public Tobacco GetItemById(int itemId)
         {
             try

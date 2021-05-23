@@ -20,10 +20,9 @@ namespace Hookah_Advisor
         private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
-
         private const string ButtonSmokeLater = "Покурить позже";
-        //private const string ButtonHistory = "История";
-        //private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
+        private const string ButtonHistory = "История";
+        private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
         static void Main()
         {
@@ -55,7 +54,7 @@ namespace Hookah_Advisor
             {
                 await _botClient.SendTextMessageAsync(
                     message.Chat,
-                    $"Отправь мне текстовое сообщение");
+                    $"Не понимаю тебя, отправь мне текстовое сообщение");
                 return;
             }
 
@@ -85,6 +84,12 @@ namespace Hookah_Advisor
                     UserRepository.Save();
                     break;
 
+                case "/random":
+                    var rnd = new Random();
+                    var rndTobacco = TobaccoRepository.GetItemById(rnd.Next(0, 946));
+                    PrintTobaccoToKeyboard(message.Chat, new List<Tobacco> {rndTobacco});
+                    break;
+
                 case ButtonSearch:
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
@@ -92,6 +97,7 @@ namespace Hookah_Advisor
 
                     UserRepository.UpdateUserCondition(userId, userCondition.search);
                     break;
+
                 case ButtonRecommendations:
                     UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
                     UserRepository.UpdateUserQuestionNumber(userId, 0);
@@ -103,6 +109,7 @@ namespace Hookah_Advisor
                     //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
+
                 case ButtonSmokeLater:
                     var user = UserRepository.GetUserById(message.From.Id);
                     var tobaccos = user.SmokeLater.Select(t => TobaccoRepository.GetItemById(t));
@@ -123,8 +130,12 @@ namespace Hookah_Advisor
 
                     break;
 
-                // case ButtonHistory:
-                //   break;
+                case ButtonHistory:
+                    ///TODO
+                    await _botClient.SendTextMessageAsync(
+                        message.Chat,
+                        $"К сожалению, эта функция пока не работает :c");
+                    break;
 
                 default:
                     switch (UserRepository.GetUserCondition(userId).GetCondition())
@@ -248,7 +259,7 @@ namespace Hookah_Advisor
                     new()
                     {
                         new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations},
-                        new KeyboardButton {Text = ButtonSmokeLater}
+                        new KeyboardButton {Text = ButtonSmokeLater}, new KeyboardButton {Text = ButtonHistory},
                     }
                 },
                 ResizeKeyboard = true
