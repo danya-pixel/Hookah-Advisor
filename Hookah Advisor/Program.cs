@@ -239,17 +239,6 @@ namespace Hookah_Advisor
             };
         }
 
-        public static async void PrintAnswerOptionsToKeyboard(Chat message, List<string> array)
-        {
-            var keyboardMarkup =
-                new InlineKeyboardMarkup(GetInlineKeyboard(array, Enumerable.Range(0, array.Count), "yesno_"));
-            await _botClient.SendTextMessageAsync(
-                message.Id,
-                "Выбирай: ",
-                replyMarkup: keyboardMarkup
-            );
-        }
-
         private static IReplyMarkup GetButtons()
         {
             return new ReplyKeyboardMarkup
