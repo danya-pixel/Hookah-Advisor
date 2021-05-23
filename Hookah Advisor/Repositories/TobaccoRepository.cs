@@ -38,13 +38,11 @@ namespace Hookah_Advisor.Repositories
 
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
-            var tobaccoFromRequest = new List<Tobacco>();
-            foreach (var tobacco in _tobaccoDatabase.Values)
-            {
-                tobaccoFromRequest.AddRange(from t in tobacco.tastes where t.Contains(userRequest) select tobacco);
-            }
-
-            return tobaccoFromRequest;
+            return _tobaccoDatabase.Values.Where(
+                tobacco => tobacco.tastes.Any(tobaccoTaste
+                               => userRequest.Split(' ').Any(s => s.Length > 2 && tobaccoTaste.StartsWith(s))) ||
+                           tobacco.brand.ToLower().Contains(userRequest)
+            ).ToList();
         }
 
         public List<Tobacco> RecommendTobacco()
