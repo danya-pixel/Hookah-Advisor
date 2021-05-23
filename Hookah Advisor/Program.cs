@@ -47,19 +47,16 @@ namespace Hookah_Advisor
 
         private static async void BotOnMessage(object sender, MessageEventArgs e)
         {
-            var message = e.Message;
+           var message = e.Message;
             var userId = message.From.Id;
             var userFirstName = message.From.FirstName;
 
-            if (message.Type == MessageType.Text && message.Text == "🍌")
-                message.Text = "Банан";
-            if (message.Type == MessageType.Sticker && message.Sticker.SetName.ToLower().Contains("banan"))
-                message.Text = "Банан";
-            else if (message.Type == MessageType.Sticker)
+            if (message.Type != MessageType.Text)
             {
                 await _botClient.SendTextMessageAsync(
                     message.Chat,
-                    $"К сожалению, у меня нет табака с таким вкусом :c");
+                    $"Отправь мне текстовое сообщение");
+                return;
             }
 
             switch (message.Text)
@@ -101,7 +98,7 @@ namespace Hookah_Advisor
                     ///TODO 
                     await _botClient.SendTextMessageAsync(
                         message.Chat,
-                        $"К сожалению пока эта функция не работает :c");
+                        $"К сожалению, эта функция пока не работает :c");
                     //    $"Тебя интересует табак с холодком?");
                     //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     UserRepository.UpdateUserQuestionNumber(userId, 1);
@@ -168,7 +165,7 @@ namespace Hookah_Advisor
                 "\n" +
                 " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
                 " «Рекомендации⭐️» подсказывают табак на основании опроса. \n" + "\n" +
-                " «Покурить позже📜» хранит все сохранённые тобой табаки. \n" + "\n" +
+                " «Покурить позже🌫» хранит все сохранённые тобой табаки. \n" + "\n" +
                 " Жми на нужную тебе кнопку снизу!👇", replyMarkup: GetButtons());
         }
 
@@ -181,7 +178,7 @@ namespace Hookah_Advisor
                 "\n" +
                 "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
                 "«Рекомендации⭐️» подсказывают табак на основании опроса.\n" + "\n" +
-                "«Покурить позже📜» хранит все сохранённые тобой табаки.\n" + "\n" +
+                "«Покурить позже🌫» хранит все сохранённые тобой табаки.\n" + "\n" +
                 "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
