@@ -1,4 +1,4 @@
-﻿namespace Hookah_Advisor.Repository_Interfaces
+﻿namespace Hookah_Advisor
 {
     public enum userCondition
     {
