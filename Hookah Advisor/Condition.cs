@@ -1,41 +1,41 @@
 ﻿namespace Hookah_Advisor
 {
-    public enum userCondition
+    public enum UserCondition
     {
-        none,
-        search,
-        recommendation,
+        None,
+        Search,
+        Recommendation,
     }
 
     public class Condition
     {
-        public userCondition condition = userCondition.none;
-        private int questionNumber = 0;
+        private UserCondition _condition;
+        private int _questionNumber;
 
-        public Condition(userCondition condition, int questionNumber)
+        public Condition(UserCondition condition, int questionNumber)
         {
-            this.condition = condition;
-            this.questionNumber = questionNumber;
+            _condition = condition;
+            _questionNumber = questionNumber;
         }
 
-        public void SetCondition(userCondition condition)
+        public void SetCondition(UserCondition condition)
         {
-            this.condition = condition;
+            _condition = condition;
         }
         
         public void SetQuestionNumber(int questionNumber)
         {
-            this.questionNumber = questionNumber;
+            _questionNumber = questionNumber;
         }
         
-        public userCondition GetCondition()
+        public UserCondition GetCondition()
         {
-            return condition;
+            return _condition;
         }
         
         public int GetQuestionNumber()
         {
-            return questionNumber;
+            return _questionNumber;
         }
     }
 }

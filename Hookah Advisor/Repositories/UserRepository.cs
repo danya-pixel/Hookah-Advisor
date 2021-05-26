@@ -14,8 +14,8 @@ namespace Hookah_Advisor.Repositories
 
         public UserRepository(IParser<User> userParser)
         {
-           _userParser = userParser;
-           _usersDatabase = userParser.Load("users.json");
+            _userParser = userParser;
+            _usersDatabase = userParser.Load("users.json");
         }
 
         public void AddUserById(int userId, string userName)
@@ -41,13 +41,14 @@ namespace Hookah_Advisor.Repositories
             GetUserById(userId).SetUserName(newUserName);
         }
 
-        public void UpdateUserCondition(int userId, userCondition condition)
+        public void UpdateUserCondition(int userId, UserCondition condition)
         {
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
 
             GetUserById(userId).SetUserCondition(condition);
         }
+
         public void UpdateUserQuestionNumber(int userId, int questionNumber)
         {
             if (!IsUserRegistered(userId))
@@ -92,25 +93,5 @@ namespace Hookah_Advisor.Repositories
         {
             throw new ArgumentException("User does not exist");
         }
-
-        /*public void Save(string fileName)
-        {
-            var convertedDictionary = UsersByIdDict.ToDictionary(item => item.Key, item => item.Value.GetUserName());
-            using var file = File.CreateText("../../../" + fileName); //should be implemented
-            var serializer = new JsonSerializer();
-            serializer.Serialize(file, convertedDictionary);
-        }
-
-        public void Load(string fileName)
-        {
-            var str = File.ReadAllText("../../../" + fileName);
-            var usersDict = JsonConvert.DeserializeObject<Dictionary<int,string>>(str);
-            if (usersDict == null) return;
-            
-            foreach (var (id, name) in usersDict)
-            {
-                AddUserById(id, name);
-            }
-        }*/
     }
 }

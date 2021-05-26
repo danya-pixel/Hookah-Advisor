@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Hookah_Advisor.Parsers;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 using Hookah_Advisor.Repositories;
-using Hookah_Advisor.Repository_Interfaces;
 using Hookah_Advisor.TelegramBot;
 using Telegram.Bot.Types.Enums;
 
@@ -16,7 +11,7 @@ namespace Hookah_Advisor
 {
     class Program
     {
-        static ITelegramBotClient _botClient;
+        private static ITelegramBotClient _botClient;
         private static readonly UserRepository UserRepository = new(new UserParser());
         private static readonly TobaccoRepository TobaccoRepository = new(new TobaccoParser());
 
@@ -26,7 +21,7 @@ namespace Hookah_Advisor
 
             var me = _botClient.GetMeAsync().Result;
             Console.WriteLine(
-                $"Hello, World! I am user {me.Id} and my name is {me.FirstName}."
+                $"Bot is working with id: {me.Id} and name {me.FirstName}."
             );
 
             _botClient.OnMessage += BotOnMessage;
@@ -40,23 +35,21 @@ namespace Hookah_Advisor
             UserRepository.Save();
         }
 
-        private static async void BotOnMessage(object sender, MessageEventArgs e)
+        private static void BotOnMessage(object sender, MessageEventArgs e)
         {
             var message = e.Message;
 
             if (message.Type != MessageType.Text)
             {
-                await _botClient.SendTextMessageAsync(
-                    message.Chat,
-                    $"Не понимаю тебя, отправь мне текстовое сообщение");
+                TelegramMessageSender.SendWhenNotTextMessage(message, _botClient);
                 return;
             }
 
-            TelegramMessage.MessegeRecieved(message, UserRepository,
+            TelegramMessage.MessageReceived(message, UserRepository,
                 TobaccoRepository, _botClient);
         }
 
-        private static async void BotOnCallbackQueryReceived(object sender,
+        private static void BotOnCallbackQueryReceived(object sender,
             CallbackQueryEventArgs callbackQueryEventArgs)
         {
             CallbackHandler.BotOnCallbackQueryReceived(UserRepository, TobaccoRepository, callbackQueryEventArgs,

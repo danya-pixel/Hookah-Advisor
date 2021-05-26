@@ -1,4 +1,0 @@
-﻿namespace Hookah_Advisor
-{
-    
-}

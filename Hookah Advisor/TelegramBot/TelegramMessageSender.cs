@@ -1,32 +1,32 @@
-﻿using Telegram.Bot.Args;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Hookah_Advisor.Parsers;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using Hookah_Advisor.Repositories;
-using Hookah_Advisor.Repository_Interfaces;
-using Telegram.Bot.Types.Enums;
 
 
 namespace Hookah_Advisor.TelegramBot
 {
-    public class TelegramMessageSender
+    public static class TelegramMessageSender
     {
         private const string ButtonSearch = "Поиск";
         private const string ButtonRecommendations = "Рекомендации";
         private const string ButtonSmokeLater = "Покурить позже";
         private const string ButtonHistory = "История";
 
-        public static async void SendStartMessage(Message message, ITelegramBotClient _botClient)
+        public static async void SendWhenNotTextMessage(Message message, ITelegramBotClient botClient)
+        {
+            await botClient.SendTextMessageAsync(
+                message.Chat,
+                $"Не понимаю тебя, отправь мне текстовое сообщение");
+        }
+
+        public static async void SendStartMessage(Message message, ITelegramBotClient botClient)
         {
             var chat = message.Chat;
             var userFirstName = message.From.FirstName;
 
-            await _botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                 chat,
                 $"Привет {userFirstName},\n" +
                 "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
@@ -39,11 +39,11 @@ namespace Hookah_Advisor.TelegramBot
                 " Жми на нужную тебе кнопку снизу!👇", replyMarkup: GetButtons());
         }
 
-        public static async void SendHelpMessage(Message message, ITelegramBotClient _botClient)
+        public static async void SendHelpMessage(Message message, ITelegramBotClient botClient)
         {
             var chat = message.Chat;
 
-            await _botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                 chat,
                 $"Этот бот помогает найти табак для кальяна под твои предпочтения💨\n" + "\n" +
                 "Курение вредит Вашему здоровью! Используя этот бот, вы подтверждаете свой совершеннолетний возраст🔞\n" +
@@ -54,7 +54,7 @@ namespace Hookah_Advisor.TelegramBot
                 "Жми на нужную тебе кнопку снизу!👇\n");
         }
 
-        public static IReplyMarkup GetButtons()
+        private static IReplyMarkup GetButtons()
         {
             return new ReplyKeyboardMarkup
             {
@@ -67,15 +67,14 @@ namespace Hookah_Advisor.TelegramBot
             };
         }
 
-        public static async void PrintTobaccoToKeyboard(Message message, ITelegramBotClient _botClient,
+        public static async void PrintTobaccoToKeyboard(Message message, ITelegramBotClient botClient,
             List<Tobacco> tobaccos)
         {
-            var chat = message.Chat;
             var array = tobaccos.Select(t => t.ToString());
-            var idTobaccos = tobaccos.Select(t => t.id);
+            var idTobaccos = tobaccos.Select(t => t.Id);
 
             var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, "tobaccoFromRequest"));
-            await _botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                 message.From.Id,
                 "Смотри, что я нашёл:",
                 replyMarkup: keyboardMarkup

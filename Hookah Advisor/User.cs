@@ -10,13 +10,13 @@ namespace Hookah_Advisor
         public string UserName { get; set; } //should be public for Serializer
         public HashSet<int> SmokeLater { get; set; } 
 
-        public readonly Condition Condition;
+        public readonly Condition Condition; //should be public for Serializer
 
         public User(int id, string userName)
         {
             Id = id;
             UserName = userName;
-            Condition = new Condition(userCondition.none, 0);
+            Condition = new Condition(UserCondition.None, 0);
             SmokeLater = new HashSet<int>();
         }
 
@@ -25,7 +25,7 @@ namespace Hookah_Advisor
             UserName = newUserName;
         }
 
-        public void SetUserCondition(userCondition userCondition)
+        public void SetUserCondition(UserCondition userCondition)
         {
             Condition.SetCondition(userCondition);
         }

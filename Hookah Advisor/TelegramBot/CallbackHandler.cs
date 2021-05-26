@@ -5,16 +5,15 @@ using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Hookah_Advisor.TelegramBot
 {
-    public class CallbackHandler
+    public static class CallbackHandler
     {
         public static async void BotOnCallbackQueryReceived(IUserRepository userRepository,
             TobaccoRepository tobaccoRepository,
-            CallbackQueryEventArgs callbackQueryEventArgs, ITelegramBotClient _botClient)
+            CallbackQueryEventArgs callbackQueryEventArgs, ITelegramBotClient botClient)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackData = callbackQuery.Data;
@@ -27,34 +26,34 @@ namespace Hookah_Advisor.TelegramBot
             {
                 case "tobaccoFromRequest":
                     var tags = new HashSet<string>();
-                    foreach (var t in tobaccoFromTap.categories.Select(t => $"#{t}"))
+                    foreach (var t in tobaccoFromTap.Categories.Select(t => $"#{t}"))
                     {
                         tags.Add(t);
                     }
 
-                    foreach (var t in tags.Concat(tobaccoFromTap.tastes.Select(t => $"#{t}")))
+                    foreach (var t in tags.Concat(tobaccoFromTap.Tastes.Select(t => $"#{t}")))
                     {
                         tags.Add(t);
                     }
 
                     var result =
-                        $"{tobaccoFromTap}\n{string.Join(" ", tags)}\n\n{tobaccoFromTap.description}";
+                        $"{tobaccoFromTap}\n{string.Join(" ", tags)}\n\n{tobaccoFromTap.Description}";
                     if (user.SmokeLater.Contains(idTobacco))
                     {
-                        await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
+                        await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
                             replyMarkup: new InlineKeyboardMarkup(
                                 TelegramMessageSender.GetInlineKeyboard("Я покурил", idTobacco, "unShmokeLater")));
-                        await _botClient.AnswerCallbackQueryAsync(
+                        await botClient.AnswerCallbackQueryAsync(
                             callbackQuery.Id,
                             $"{tobaccoFromTap}"
                         );
                     }
                     else
                     {
-                        await _botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
+                        await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, result,
                             replyMarkup: new InlineKeyboardMarkup(
                                 TelegramMessageSender.GetInlineKeyboard("Покурить позже", idTobacco, "shmokeLater")));
-                        await _botClient.AnswerCallbackQueryAsync(
+                        await botClient.AnswerCallbackQueryAsync(
                             callbackQuery.Id,
                             $"{tobaccoFromTap}"
                         );
@@ -63,22 +62,22 @@ namespace Hookah_Advisor.TelegramBot
                     break;
                 case "shmokeLater":
                     user.SmokeLater.Add(idTobacco);
-                    await _botClient.AnswerCallbackQueryAsync(
+                    await botClient.AnswerCallbackQueryAsync(
                         callbackQuery.Id,
                         $"Покумарим {tobaccoFromTap}"
                     );
-                    await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                         callbackQuery.Message.MessageId, callbackQuery.Message.Text,
                         replyMarkup: new InlineKeyboardMarkup(
                             TelegramMessageSender.GetInlineKeyboard("Я покурил", idTobacco, "unShmokeLater")));
                     break;
                 case "unShmokeLater":
                     user.SmokeLater.Remove(idTobacco);
-                    await _botClient.AnswerCallbackQueryAsync(
+                    await botClient.AnswerCallbackQueryAsync(
                         callbackQuery.Id,
                         $"Покалюмбасили {tobaccoFromTap}"
                     );
-                    await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                         callbackQuery.Message.MessageId, callbackQuery.Message.Text,
                         replyMarkup: new InlineKeyboardMarkup(
                             TelegramMessageSender.GetInlineKeyboard("Покурить позже", idTobacco, "shmokeLater")));

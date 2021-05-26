@@ -17,7 +17,7 @@ namespace Hookah_Advisor.Parsers
             
             foreach (var tobacco in tobaccoList)
             {
-                tobaccoDict[tobacco.id] = tobacco;
+                tobaccoDict[tobacco.Id] = tobacco;
             }
 
             return tobaccoDict;

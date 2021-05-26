@@ -13,6 +13,8 @@
 
     <ItemGroup>
       <Compile Remove="source\**" />
+      <Compile Remove="Repositories\OptionRepository.cs" />
+      <Compile Remove="Option\Option.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,6 +23,10 @@
 
     <ItemGroup>
       <None Remove="source\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Option" />
     </ItemGroup>
 
 </Project>

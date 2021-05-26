@@ -5,31 +5,27 @@ namespace Hookah_Advisor
 {
     public class Tobacco
     {
-        public int id { get; set; }
-        public string brand { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public List<string> categories { get; set; }
-        public List<string> tastes { get; set; }
+        public int Id { get; }
+        public string Brand { get; }
+        public string Name { get; } //should be public for Serializer
+        public string Description { get; }
+        public List<string> Categories { get; }
+        public List<string> Tastes { get; }
 
         public Tobacco(int id, string brand, string name, string description, List<string> categories,
             List<string> tastes)
         {
-            this.id = id;
-            this.brand = brand;
-            this.name = name;
-            this.description = description;
-            this.categories = categories;
-            this.tastes = tastes;
-        }
-
-        public Tobacco()
-        {
+            Id = id;
+            Brand = brand;
+            Name = name;
+            Description = description;
+            Categories = categories;
+            Tastes = tastes;
         }
 
         public override string ToString()
         {
-            return $"{brand}: {name}";
+            return $"{Brand}: {Name}";
         }
     }
 }

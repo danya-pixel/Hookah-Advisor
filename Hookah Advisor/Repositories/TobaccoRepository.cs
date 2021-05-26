@@ -38,9 +38,9 @@ namespace Hookah_Advisor.Repositories
         public List<Tobacco> SearchTobaccoInDict(string userRequest)
         {
             return _tobaccoDatabase.Values.Where(
-                tobacco => tobacco.tastes.Any(tobaccoTaste
+                tobacco => tobacco.Tastes.Any(tobaccoTaste
                                => userRequest.Split(' ').Any(s => s.Length > 2 && tobaccoTaste.StartsWith(s))) ||
-                           tobacco.brand.ToLower().Contains(userRequest)
+                           tobacco.Brand.ToLower().Contains(userRequest)
             ).ToList();
         }
 
