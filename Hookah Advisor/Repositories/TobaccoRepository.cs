@@ -49,5 +49,10 @@ namespace Hookah_Advisor.Repositories
         {
             return null;
         }
+
+        public int GetRepositorySize()
+        {
+            return _tobaccoDatabase.Count;
+        }
     }
 }
