@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Ninject" Version="3.3.4" />
       <PackageReference Include="Telegram.Bot" Version="15.7.1" />
     </ItemGroup>
 
