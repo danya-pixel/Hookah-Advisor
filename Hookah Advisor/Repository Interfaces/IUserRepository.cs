@@ -9,5 +9,10 @@ namespace Hookah_Advisor.Repository_Interfaces
         void AddUserById(int userId, string userName);
         void DeleteUserById(int userId); // пока не знаю насколько нужно
         void UpdateUsername(int userId, string newUserName);
+        public void Save();
+        Condition GetUserCondition(int userId);
+        void UpdateUserQuestionNumber(int userId, int p1);
+        void UpdateUserCondition(int userId, UserCondition search);
+        bool IsUserRegistered(int userId);
     }
 }

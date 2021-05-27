@@ -4,7 +4,7 @@ using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using Hookah_Advisor.Repositories;
+using Hookah_Advisor.Repository_Interfaces;
 
 
 namespace Hookah_Advisor.TelegramBot
@@ -17,8 +17,8 @@ namespace Hookah_Advisor.TelegramBot
         private const string ButtonHistory = "История";
         private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
 
-        public static async void MessageReceived(Message message, UserRepository userRepository,
-            TobaccoRepository tobaccoRepository, ITelegramBotClient botClient)
+        public static async void MessageReceived(Message message, IUserRepository userRepository,
+            IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient)
         {
             var userFirstName = message.From.FirstName;
             var userId = message.From.Id;
@@ -77,7 +77,6 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case ButtonSmokeLater:
-                    
                     var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccos.Any())
                     {
@@ -98,11 +97,6 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case ButtonHistory:
-                    ///TODO
-                    /*await botClient.SendTextMessageAsync(
-                        message.Chat,
-                        $"К сожалению, эта функция пока не работает :c");*/
-                    
                     var tobaccosHistory = user.SmokedHistory.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccosHistory.Any())
                     {
@@ -119,6 +113,7 @@ namespace Hookah_Advisor.TelegramBot
                                 tobaccosHistory.Select(t => t.ToString()),
                                 user.SmokedHistory, "tobaccoFromRequest")));
                     }
+
                     break;
 
                 default:

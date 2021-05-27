@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -13,7 +12,7 @@ namespace Hookah_Advisor.TelegramBot
     public static class CallbackHandler
     {
         public static async void BotOnCallbackQueryReceived(IUserRepository userRepository,
-            TobaccoRepository tobaccoRepository,
+            IItemRepository<Tobacco> tobaccoRepository,
             CallbackQueryEventArgs callbackQueryEventArgs, ITelegramBotClient botClient)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
