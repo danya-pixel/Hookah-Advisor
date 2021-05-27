@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.ReplyMarkups;
 
+
 namespace Hookah_Advisor.TelegramBot
 {
     public static class CallbackHandler
@@ -72,6 +73,7 @@ namespace Hookah_Advisor.TelegramBot
                             TelegramMessageSender.GetInlineKeyboard("Я покурил", idTobacco, "unShmokeLater")));
                     break;
                 case "unShmokeLater":
+                    user.SmokedHistory.Add(idTobacco);
                     user.SmokeLater.Remove(idTobacco);
                     await botClient.AnswerCallbackQueryAsync(
                         callbackQuery.Id,

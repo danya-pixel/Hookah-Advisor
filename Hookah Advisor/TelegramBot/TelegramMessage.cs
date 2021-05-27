@@ -22,6 +22,7 @@ namespace Hookah_Advisor.TelegramBot
         {
             var userFirstName = message.From.FirstName;
             var userId = message.From.Id;
+            var user = userRepository.GetUserById(message.From.Id);
 
             switch (message.Text)
             {
@@ -76,7 +77,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case ButtonSmokeLater:
-                    var user = userRepository.GetUserById(message.From.Id);
+                    
                     var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccos.Any())
                     {
@@ -98,9 +99,26 @@ namespace Hookah_Advisor.TelegramBot
 
                 case ButtonHistory:
                     ///TODO
-                    await botClient.SendTextMessageAsync(
+                    /*await botClient.SendTextMessageAsync(
                         message.Chat,
-                        $"К сожалению, эта функция пока не работает :c");
+                        $"К сожалению, эта функция пока не работает :c");*/
+                    
+                    var tobaccosHistory = user.SmokedHistory.Select(t => tobaccoRepository.GetItemById(t));
+                    if (!tobaccosHistory.Any())
+                    {
+                        await botClient.SendTextMessageAsync(
+                            message.Chat,
+                            $"Да ты еще не курил ниче");
+                    }
+                    else
+                    {
+                        await botClient.SendTextMessageAsync(
+                            message.Chat,
+                            $"История твоих покуров🤤🤤🤤",
+                            replyMarkup: new InlineKeyboardMarkup(TelegramMessageSender.GetInlineKeyboard(
+                                tobaccosHistory.Select(t => t.ToString()),
+                                user.SmokedHistory, "tobaccoFromRequest")));
+                    }
                     break;
 
                 default:

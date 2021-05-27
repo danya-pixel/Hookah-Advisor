@@ -8,8 +8,8 @@ namespace Hookah_Advisor
     {
         public int Id { get; }
         public string UserName { get; set; } //should be public for Serializer
-        public HashSet<int> SmokeLater { get; set; } 
-
+        public HashSet<int> SmokeLater { get; set; }
+        public HashSet<int> SmokedHistory { get; set; }
         public readonly Condition Condition; //should be public for Serializer
 
         public User(int id, string userName)
@@ -18,6 +18,7 @@ namespace Hookah_Advisor
             UserName = userName;
             Condition = new Condition(UserCondition.None, 0);
             SmokeLater = new HashSet<int>();
+            SmokedHistory = new HashSet<int>();
         }
 
         public void SetUserName(string newUserName)
