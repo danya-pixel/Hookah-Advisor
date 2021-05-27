@@ -6,7 +6,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Hookah_Advisor.TelegramBot
 {
-    public abstract class TelegramBot
+    public class TelegramBot
     {
         private readonly ITelegramBotClient _botClient;
         private readonly IUserRepository _userRepository;

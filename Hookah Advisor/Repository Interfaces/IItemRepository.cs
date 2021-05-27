@@ -2,10 +2,10 @@
 
 namespace Hookah_Advisor.Repository_Interfaces
 {
-    public interface IItemRepository<out T>
+    public interface IItemRepository<T>
     {
         T GetItemById(int itemId);
         void Save();
-        List<Tobacco> SearchTobaccoInDict(string toLower);
+        List<T> SearchTobaccoInDict(string toLower);
     }
 }

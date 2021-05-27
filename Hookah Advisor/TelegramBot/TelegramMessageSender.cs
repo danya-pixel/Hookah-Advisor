@@ -9,16 +9,11 @@ namespace Hookah_Advisor.TelegramBot
 {
     public static class TelegramMessageSender
     {
-        private const string ButtonSearch = "Поиск";
-        private const string ButtonRecommendations = "Рекомендации";
-        private const string ButtonSmokeLater = "Покурить позже";
-        private const string ButtonHistory = "История";
-
         public static async void SendWhenNotTextMessage(Message message, ITelegramBotClient botClient)
         {
             await botClient.SendTextMessageAsync(
                 message.Chat,
-                $"Не понимаю тебя, отправь мне текстовое сообщение");
+                BotSettings.InvalidMessage);
         }
 
         public static async void SendStartMessage(Message message, ITelegramBotClient botClient)
@@ -45,13 +40,7 @@ namespace Hookah_Advisor.TelegramBot
 
             await botClient.SendTextMessageAsync(
                 chat,
-                $"Этот бот помогает найти табак для кальяна под твои предпочтения💨\n" + "\n" +
-                "Курение вредит Вашему здоровью! Используя этот бот, вы подтверждаете свой совершеннолетний возраст🔞\n" +
-                "\n" +
-                "«Поиск🔎» помогает найти табак по твоему запросу.\n" + "\n" +
-                "«Рекомендации⭐️» подсказывают табак на основании опроса.\n" + "\n" +
-                "«Покурить позже🌫» хранит все сохранённые тобой табаки.\n" + "\n" +
-                "Жми на нужную тебе кнопку снизу!👇\n");
+                BotSettings.HelpMessage);
         }
 
         private static IReplyMarkup GetButtons()
@@ -60,8 +49,16 @@ namespace Hookah_Advisor.TelegramBot
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new() {new KeyboardButton {Text = ButtonSearch}, new KeyboardButton {Text = ButtonRecommendations}},
-                    new() {new KeyboardButton {Text = ButtonSmokeLater}, new KeyboardButton {Text = ButtonHistory}}
+                    new()
+                    {
+                        new KeyboardButton {Text = BotSettings.ButtonSearch},
+                        new KeyboardButton {Text = BotSettings.ButtonRecommendations}
+                    },
+                    new()
+                    {
+                        new KeyboardButton {Text = BotSettings.ButtonSmokeLater},
+                        new KeyboardButton {Text = BotSettings.ButtonHistory}
+                    }
                 },
                 ResizeKeyboard = true
             };
@@ -73,10 +70,10 @@ namespace Hookah_Advisor.TelegramBot
             var array = tobaccos.Select(t => t.ToString());
             var idTobaccos = tobaccos.Select(t => t.Id);
 
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, "tobaccoFromRequest"));
+            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, BotSettings.TypeSearchTobacco));
             await botClient.SendTextMessageAsync(
                 message.From.Id,
-                "Смотри, что я нашёл:",
+                BotSettings.SearchListMessage,
                 replyMarkup: keyboardMarkup
             );
         }

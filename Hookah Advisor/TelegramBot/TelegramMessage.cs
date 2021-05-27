@@ -11,12 +11,6 @@ namespace Hookah_Advisor.TelegramBot
 {
     public static class TelegramMessage
     {
-        private const string ButtonSearch = "Поиск";
-        private const string ButtonRecommendations = "Рекомендации";
-        private const string ButtonSmokeLater = "Покурить позже";
-        private const string ButtonHistory = "История";
-        private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
-
         public static async void MessageReceived(Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient)
         {
@@ -26,7 +20,7 @@ namespace Hookah_Advisor.TelegramBot
 
             switch (message.Text)
             {
-                case "/start":
+                case BotSettings.StartCommand:
                 {
                     TelegramMessageSender.SendStartMessage(message, botClient);
                     if (!userRepository.IsUserRegistered(userId))
@@ -43,75 +37,75 @@ namespace Hookah_Advisor.TelegramBot
 
                     break;
                 }
-                case "/help":
+                case BotSettings.HelpCommand:
                     TelegramMessageSender.SendHelpMessage(message, botClient);
                     userRepository.UpdateUserCondition(userId, UserCondition.None);
                     userRepository.UpdateUserQuestionNumber(userId, 0);
                     userRepository.Save();
                     break;
 
-                case "/random":
+                case BotSettings.RandomCommand:
                     var rnd = new Random();
                     var rndTobacco = tobaccoRepository.GetItemById(rnd.Next(0, 946));
                     TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, new List<Tobacco> {rndTobacco});
                     break;
 
-                case ButtonSearch:
+                case BotSettings.ButtonSearch:
                     await botClient.SendTextMessageAsync(
                         message.Chat,
-                        $"Напиши, какой вкус ты ищешь:");
+                        BotSettings.SearchQuestion);
 
                     userRepository.UpdateUserCondition(userId, UserCondition.Search);
                     break;
 
-                case ButtonRecommendations:
+                case BotSettings.ButtonRecommendations:
                     //UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
                     //UserRepository.UpdateUserQuestionNumber(userId, 0);
                     ///TODO 
                     await botClient.SendTextMessageAsync(
                         message.Chat,
-                        $"К сожалению, эта функция пока не работает :c");
+                        "К сожалению, эта функция пока не работает :c");
                     //    $"Тебя интересует табак с холодком?");
                     //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
                     userRepository.UpdateUserQuestionNumber(userId, 1);
                     break;
 
-                case ButtonSmokeLater:
+                case BotSettings.ButtonSmokeLater:
                     var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccos.Any())
                     {
                         await botClient.SendTextMessageAsync(
                             message.Chat,
-                            $"У тебя нет планов на покур😤. \n\nДобавь что-нибудь😈😈😈");
+                            BotSettings.SmokeLaterEmpty);
                     }
                     else
                     {
                         await botClient.SendTextMessageAsync(
                             message.Chat,
-                            $"Ты хотел покурить: ",
+                            BotSettings.SmokeLaterMessage,
                             replyMarkup: new InlineKeyboardMarkup(TelegramMessageSender.GetInlineKeyboard(
                                 tobaccos.Select(t => t.ToString()),
-                                user.SmokeLater, "tobaccoFromRequest")));
+                                user.SmokeLater, BotSettings.TypeSearchTobacco)));
                     }
 
                     break;
 
-                case ButtonHistory:
+                case BotSettings.ButtonHistory:
                     var tobaccosHistory = user.SmokedHistory.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccosHistory.Any())
                     {
                         await botClient.SendTextMessageAsync(
                             message.Chat,
-                            $"Да ты еще не курил ниче");
+                            BotSettings.SmokedHistoryEmpty);
                     }
                     else
                     {
                         await botClient.SendTextMessageAsync(
                             message.Chat,
-                            $"История твоих покуров🤤🤤🤤",
+                            BotSettings.SmokedHistoryMessage,
                             replyMarkup: new InlineKeyboardMarkup(TelegramMessageSender.GetInlineKeyboard(
                                 tobaccosHistory.Select(t => t.ToString()),
-                                user.SmokedHistory, "tobaccoFromRequest")));
+                                user.SmokedHistory, BotSettings.TypeSearchTobacco)));
                     }
 
                     break;
@@ -128,7 +122,7 @@ namespace Hookah_Advisor.TelegramBot
                             {
                                 await botClient.SendTextMessageAsync(
                                     message.Chat,
-                                    $"К сожалению, у меня нет табака с таким вкусом :c");
+                                    BotSettings.SearchListEmpty);
                             }
                             else
                                 TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, resultRequest);

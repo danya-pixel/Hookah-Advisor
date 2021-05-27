@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Hookah_Advisor.Repository_Interfaces;
+﻿using System.Collections.Generic;
 
 namespace Hookah_Advisor
 {
     public class User
     {
         public int Id { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string UserName { get; set; } //should be public for Serializer
         public HashSet<int> SmokeLater { get; set; }
         public HashSet<int> SmokedHistory { get; set; }
