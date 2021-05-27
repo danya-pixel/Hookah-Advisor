@@ -1,12 +1,9 @@
 using System;
 using Hookah_Advisor.Parsers;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Hookah_Advisor.Repositories;
 using Hookah_Advisor.Repository_Interfaces;
-using Hookah_Advisor.TelegramBot;
 using Ninject;
-using Telegram.Bot.Types.Enums;
 
 
 namespace Hookah_Advisor
