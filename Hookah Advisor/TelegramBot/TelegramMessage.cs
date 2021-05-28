@@ -50,6 +50,13 @@ namespace Hookah_Advisor.TelegramBot
                     TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, new List<Tobacco> {rndTobacco});
                     break;
 
+                case BotSettings.ClearHistoryCommand:
+                    user.SmokedHistory.Clear();
+                    await botClient.SendTextMessageAsync(
+                        message.Chat,
+                        BotSettings.ClearHistoryMessage);
+                    break;
+                
                 case BotSettings.ButtonSearch:
                     await botClient.SendTextMessageAsync(
                         message.Chat,

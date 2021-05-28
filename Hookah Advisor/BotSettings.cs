@@ -16,10 +16,12 @@ namespace Hookah_Advisor
         public const string StartCommand = "/start";
         public const string HelpCommand = "/help";
         public const string RandomCommand = "/random";
+        public const string ClearHistoryCommand = "/clearhistory"; 
 
         public const string SearchQuestion = "Напиши, какой вкус ты ищешь:";
         public const string SearchListEmpty = "К сожалению, у меня нет табака с таким вкусом :c";
         public const string SearchListMessage = "Смотри, что я нашёл:";
+        public const string ClearHistoryMessage = "История покуров очищена😤"; 
 
         public const string SmokeLaterEmpty = "У тебя нет планов на покур😤. \n\nДобавь что-нибудь😈😈😈";
         public const string SmokeLaterMessage = "Ты хотел покурить: ";
