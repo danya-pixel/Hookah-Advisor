@@ -25,7 +25,7 @@ namespace Hookah_Advisor
         public const string SmokeLaterEmpty = "У тебя нет планов на покур😤. \n\nДобавь что-нибудь😈😈😈";
         public const string SmokeLaterMessage = "Ты хотел покурить: ";
 
-        public const string SmokedHistoryEmpty = "Да ты еще не курил ниче";
+        public const string SmokedHistoryEmpty = "Ты еще ничего не курил😳😳😳";
         public const string SmokedHistoryMessage = "История твоих покуров🤤🤤🤤";
 
         public const string HelloMessage = "Привет, ";
