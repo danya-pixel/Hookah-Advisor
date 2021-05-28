@@ -46,7 +46,8 @@ namespace Hookah_Advisor.TelegramBot
 
                 case BotSettings.RandomCommand:
                     var rnd = new Random();
-                    var rndTobacco = tobaccoRepository.GetItemById(rnd.Next(0, 946));
+                    var repoSize = tobaccoRepository.GetRepositorySize()-1;
+                    var rndTobacco = tobaccoRepository.GetItemById(rnd.Next(0, repoSize));
                     TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, new List<Tobacco> {rndTobacco});
                     break;
 
