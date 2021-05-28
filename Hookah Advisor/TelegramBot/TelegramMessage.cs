@@ -16,7 +16,6 @@ namespace Hookah_Advisor.TelegramBot
         {
             var userFirstName = message.From.FirstName;
             var userId = message.From.Id;
-            var user = userRepository.GetUserById(message.From.Id);
 
             switch (message.Text)
             {
@@ -33,8 +32,7 @@ namespace Hookah_Advisor.TelegramBot
                         userRepository.UpdateUserCondition(userId, UserCondition.None);
                         userRepository.UpdateUserQuestionNumber(userId, 0);
                     }
-
-
+                    
                     break;
                 }
                 case BotSettings.HelpCommand:
@@ -52,6 +50,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ClearHistoryCommand:
+                    var user = userRepository.GetUserById(message.From.Id);
                     user.SmokedHistory.Clear();
                     await botClient.SendTextMessageAsync(
                         message.Chat,
@@ -79,6 +78,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ButtonSmokeLater:
+                    user = userRepository.GetUserById(message.From.Id);
                     var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccos.Any())
                     {
@@ -98,7 +98,8 @@ namespace Hookah_Advisor.TelegramBot
 
                     break;
 
-                case BotSettings.ButtonHistory:
+                case BotSettings.ButtonHistory: 
+                    user = userRepository.GetUserById(message.From.Id);
                     var tobaccosHistory = user.SmokedHistory.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccosHistory.Any())
                     {
