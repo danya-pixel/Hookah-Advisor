@@ -9,7 +9,7 @@ namespace Hookah_Advisor.Parsers
     {
         public Dictionary<int, Tobacco> Load(string fileName)
         {
-            var str = File.ReadAllText("../../../src/" + fileName);
+            var str = File.ReadAllText("../../../Source/" + fileName);
             var tobaccoList = JsonConvert.DeserializeObject<List<Tobacco>>(str);
 
             var tobaccoDict = new Dictionary<int, Tobacco>();
@@ -25,7 +25,7 @@ namespace Hookah_Advisor.Parsers
         public void Write(Dictionary<int, Tobacco> database,string fileName)
         {
             var tobaccoList = database.Cast<Tobacco>().ToList();
-            File.WriteAllText("../../../src/" + fileName, JsonConvert.SerializeObject(tobaccoList));
+            File.WriteAllText("../../../Source/" + fileName, JsonConvert.SerializeObject(tobaccoList));
         }
         
     }

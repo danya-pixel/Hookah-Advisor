@@ -15,7 +15,7 @@ namespace Hookah_Advisor.Repositories
         public TobaccoRepository(IParser<Tobacco> tobaccoParser)
         {
             _tobaccoParser = tobaccoParser;
-            _tobaccoDatabase = tobaccoParser.Load("table_v2.json");
+            _tobaccoDatabase = tobaccoParser.Load("tobaccoDatabase.json");
         }
 
         public Tobacco GetItemById(int itemId)
@@ -33,7 +33,7 @@ namespace Hookah_Advisor.Repositories
 
         public void Save()
         {
-            _tobaccoParser.Write(_tobaccoDatabase, "table_v2_test.json");
+            _tobaccoParser.Write(_tobaccoDatabase, "tobaccoDatabase_test.json");
         }
 
         public List<Tobacco> SearchItemInDict(string userRequest)
