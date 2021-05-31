@@ -8,7 +8,7 @@ namespace Hookah_Advisor
         public static string Token { get; } = Environment.GetEnvironmentVariable("TELEGRAM_TOKEN");
 
         public const string ButtonSearch = "Поиск";
-        public const string ButtonRecommendations = "Рекомендации";
+        public const string ButtonRecommendation = "Рекомендации";
         public const string ButtonSmokeLater = "Покурить позже";
         public const string ButtonHistory = "История";
 

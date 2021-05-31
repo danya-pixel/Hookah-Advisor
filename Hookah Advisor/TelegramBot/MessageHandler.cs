@@ -23,12 +23,12 @@ namespace Hookah_Advisor.TelegramBot
             {
                 case BotSettings.StartCommand:
                 {
-                    Commands.Start(botClient, message, userRepository, userId, userFirstName);
+                    Commands.Start(botClient, message, userRepository, userFirstName);
                     break;
                 }
 
                 case BotSettings.HelpCommand:
-                    Commands.Help(botClient, message, userRepository, userId);
+                    Commands.Help(botClient, message, userRepository);
                     break;
 
                 case BotSettings.RandomCommand:
@@ -40,17 +40,12 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ButtonSearch:
-                    Commands.Search(botClient, message, userRepository, userId);
+                    Commands.Search(botClient, message, userRepository);
                     break;
 
-                case BotSettings.ButtonRecommendations:
-                    //UserRepository.UpdateUserCondition(userId, userCondition.recommendation);
-                    //UserRepository.UpdateUserQuestionNumber(userId, 0);
-                    ///TODO
-                    MessageSender.SendText("К сожалению, эта функция пока не работает :c", botClient, message);
-                    //    $"Тебя интересует табак с холодком?");
-                    //PrintAnswerOptionsToKeyboard(message.Chat, YesOrNoKeyboard);
+                case BotSettings.ButtonRecommendation:
                     userRepository.UpdateUserQuestionNumber(userId, 1);
+                    Commands.Recommendation(botClient, message, userRepository, tobaccoRepository);
                     break;
 
                 case BotSettings.ButtonSmokeLater:
@@ -62,7 +57,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 default:
-                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository, userId);
+                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository);
                     break;
             }
         }

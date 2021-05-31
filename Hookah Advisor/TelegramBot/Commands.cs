@@ -10,8 +10,10 @@ namespace Hookah_Advisor.TelegramBot
     public static class Commands
     {
         public static void TextReceived(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository, int userId)
+            IItemRepository<Tobacco> tobaccoRepository)
         {
+            var userId = message.From.Id;
+
             switch (userRepository.GetUserCondition(userId).GetCondition())
             {
                 case UserCondition.None:
@@ -36,9 +38,11 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public static void Start(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            int userId, string userFirstName)
+            string userFirstName)
         {
             MessageSender.SendStartMessage(message, botClient);
+            var userId = message.From.Id;
+
             if (!userRepository.IsUserRegistered(userId))
             {
                 userRepository.AddUserById(userId, userFirstName);
@@ -51,9 +55,9 @@ namespace Hookah_Advisor.TelegramBot
             }
         }
 
-        public static void Help(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            int userId)
+        public static void Help(ITelegramBotClient botClient, Message message, IUserRepository userRepository)
         {
+            var userId = message.From.Id;
             MessageSender.SendText(BotSettings.HelpMessage, botClient, message);
             userRepository.UpdateUserCondition(userId, UserCondition.None);
             userRepository.UpdateUserQuestionNumber(userId, 0);
@@ -76,11 +80,21 @@ namespace Hookah_Advisor.TelegramBot
             MessageSender.SendText(BotSettings.ClearHistoryMessage, botClient, message);
         }
 
-        public static void Search(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            int userId)
+        public static void Search(ITelegramBotClient botClient, Message message, IUserRepository userRepository)
         {
+            var userId = message.From.Id;
             MessageSender.SendText(BotSettings.SearchQuestion, botClient, message);
             userRepository.UpdateUserCondition(userId, UserCondition.Search);
+        }
+
+        public static void Recommendation(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
+            IItemRepository<Tobacco> tobaccoRepository)
+        {
+            var userId = message.From.Id;
+            userRepository.UpdateUserCondition(userId, UserCondition.Recommendation);
+            userRepository.UpdateUserQuestionNumber(userId, 0);
+            
+             
         }
 
         public static void SmokeLater(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
@@ -94,7 +108,7 @@ namespace Hookah_Advisor.TelegramBot
             }
             else
             {
-                MessageSender.SendTextWithTobaccos(BotSettings.SmokeLaterMessage, BotSettings.TypeSearchTobacco,
+                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokeLaterMessage, BotSettings.TypeSearchTobacco,
                     botClient, message, tobaccos, user);
             }
         }
@@ -110,7 +124,7 @@ namespace Hookah_Advisor.TelegramBot
             }
             else
             {
-                MessageSender.SendTextWithTobaccos(BotSettings.SmokedHistoryMessage, BotSettings.TypeSearchTobacco,
+                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokedHistoryMessage, BotSettings.TypeSearchTobacco,
                     botClient, message, tobaccosHistory, user);
             }
         }

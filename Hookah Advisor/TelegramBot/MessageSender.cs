@@ -37,7 +37,7 @@ namespace Hookah_Advisor.TelegramBot
                 text);
         }
 
-        public static async void SendTextWithTobaccos(string text, string requestType, ITelegramBotClient botClient,
+        public static async void SendTextWithInlineKeyboard(string text, string requestType, ITelegramBotClient botClient,
             Message message, IEnumerable<Tobacco> tobaccos, User user)
         {
             switch (text)
@@ -92,19 +92,19 @@ namespace Hookah_Advisor.TelegramBot
             IEnumerable<T> idTobaccos, string type)
         {
             var keyboardInline = stringArray
-                .Zip(idTobaccos, (str, idTobacco) => new[]
+                .Zip(idTobaccos, (str, id) => new[]
                 {
                     new InlineKeyboardButton
                     {
                         Text = str,
-                        CallbackData = $"{type}_{idTobacco}"
+                        CallbackData = $"{type}_{id}"
                     }
                 });
 
             return keyboardInline;
         }
 
-        private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(string str, T idTobacco,
+        private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(string str, T id,
             string type)
         {
             return new[]
@@ -114,7 +114,7 @@ namespace Hookah_Advisor.TelegramBot
                     new InlineKeyboardButton
                     {
                         Text = str,
-                        CallbackData = $"{type}_{idTobacco}"
+                        CallbackData = $"{type}_{id}"
                     }
                 }
             };
@@ -141,7 +141,7 @@ namespace Hookah_Advisor.TelegramBot
                     new()
                     {
                         new KeyboardButton {Text = BotSettings.ButtonSearch},
-                        new KeyboardButton {Text = BotSettings.ButtonRecommendations}
+                        new KeyboardButton {Text = BotSettings.ButtonRecommendation}
                     },
                     new()
                     {
