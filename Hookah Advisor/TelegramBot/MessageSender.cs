@@ -7,7 +7,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Hookah_Advisor.TelegramBot
 {
-    public static class TelegramMessageSender
+    public static class MessageSender
     {
         public static async void SendWhenNotTextMessage(Message message, ITelegramBotClient botClient)
         {
@@ -23,15 +23,7 @@ namespace Hookah_Advisor.TelegramBot
 
             await botClient.SendTextMessageAsync(
                 chat,
-                $"Привет {userFirstName},\n" +
-                "Добро пожаловать в бота HookahAdvisor \n" + "\n" +
-                "Этот бот помогает найти табак для кальяна под твои предпочтения💨 \n " + "\n" +
-                "Курение вредит Вашему здоровью! Используя этот бот, вы подтверждаете свой совершеннолетний возраст🔞\n" +
-                "\n" +
-                " «Поиск🔎» помогает найти табак по твоему запросу. \n" + "\n" +
-                " «Рекомендации⭐️» подсказывают табак на основании опроса. \n" + "\n" +
-                " «Покурить позже🌫» хранит все сохранённые тобой табаки. \n" + "\n" +
-                " Жми на нужную тебе кнопку снизу!👇", replyMarkup: GetButtons());
+                BotSettings.HelloMessage + userFirstName + BotSettings.StartMessage, replyMarkup: GetButtons());
         }
 
         public static async void SendHelpMessage(Message message, ITelegramBotClient botClient)
@@ -70,7 +62,8 @@ namespace Hookah_Advisor.TelegramBot
             var array = tobaccos.Select(t => t.ToString());
             var idTobaccos = tobaccos.Select(t => t.Id);
 
-            var keyboardMarkup = new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, BotSettings.TypeSearchTobacco));
+            var keyboardMarkup =
+                new InlineKeyboardMarkup(GetInlineKeyboard(array, idTobaccos, BotSettings.TypeSearchTobacco));
             await botClient.SendTextMessageAsync(
                 message.From.Id,
                 BotSettings.SearchListMessage,

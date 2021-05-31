@@ -9,20 +9,27 @@ using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor.TelegramBot
 {
-    public static class TelegramMessage
+    public static class MessageHandler
     {
         public static async void MessageReceived(Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient)
         {
             var userFirstName = message.From.FirstName;
             var userId = message.From.Id;
-            var user = userRepository.GetUserById(message.From.Id);
+            
+            if (!userRepository.IsUserRegistered(userId) & message.Text != BotSettings.StartCommand)
+            {
+                await botClient.SendTextMessageAsync(
+                    message.Chat,
+                    BotSettings.InvalidUserMessage);
+                return;
+            }
 
             switch (message.Text)
             {
                 case BotSettings.StartCommand:
                 {
-                    TelegramMessageSender.SendStartMessage(message, botClient);
+                    MessageSender.SendStartMessage(message, botClient);
                     if (!userRepository.IsUserRegistered(userId))
                     {
                         userRepository.AddUserById(userId, userFirstName);
@@ -38,7 +45,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
                 }
                 case BotSettings.HelpCommand:
-                    TelegramMessageSender.SendHelpMessage(message, botClient);
+                    MessageSender.SendHelpMessage(message, botClient);
                     userRepository.UpdateUserCondition(userId, UserCondition.None);
                     userRepository.UpdateUserQuestionNumber(userId, 0);
                     userRepository.Save();
@@ -46,9 +53,17 @@ namespace Hookah_Advisor.TelegramBot
 
                 case BotSettings.RandomCommand:
                     var rnd = new Random();
-                    var repoSize = tobaccoRepository.GetRepositorySize()-1;
+                    var repoSize = tobaccoRepository.GetRepositorySize() - 1;
                     var rndTobacco = tobaccoRepository.GetItemById(rnd.Next(0, repoSize));
-                    TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, new List<Tobacco> {rndTobacco});
+                    MessageSender.PrintTobaccoToKeyboard(message, botClient, new List<Tobacco> {rndTobacco});
+                    break;
+
+                case BotSettings.ClearHistoryCommand:
+                    var user = userRepository.GetUserById(message.From.Id);
+                    user.SmokedHistory.Clear();
+                    await botClient.SendTextMessageAsync(
+                        message.Chat,
+                        BotSettings.ClearHistoryMessage);
                     break;
 
                 case BotSettings.ButtonSearch:
@@ -72,6 +87,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ButtonSmokeLater:
+                    user = userRepository.GetUserById(message.From.Id);
                     var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccos.Any())
                     {
@@ -84,7 +100,7 @@ namespace Hookah_Advisor.TelegramBot
                         await botClient.SendTextMessageAsync(
                             message.Chat,
                             BotSettings.SmokeLaterMessage,
-                            replyMarkup: new InlineKeyboardMarkup(TelegramMessageSender.GetInlineKeyboard(
+                            replyMarkup: new InlineKeyboardMarkup(MessageSender.GetInlineKeyboard(
                                 tobaccos.Select(t => t.ToString()),
                                 user.SmokeLater, BotSettings.TypeSearchTobacco)));
                     }
@@ -92,6 +108,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ButtonHistory:
+                    user = userRepository.GetUserById(message.From.Id);
                     var tobaccosHistory = user.SmokedHistory.Select(t => tobaccoRepository.GetItemById(t));
                     if (!tobaccosHistory.Any())
                     {
@@ -104,7 +121,7 @@ namespace Hookah_Advisor.TelegramBot
                         await botClient.SendTextMessageAsync(
                             message.Chat,
                             BotSettings.SmokedHistoryMessage,
-                            replyMarkup: new InlineKeyboardMarkup(TelegramMessageSender.GetInlineKeyboard(
+                            replyMarkup: new InlineKeyboardMarkup(MessageSender.GetInlineKeyboard(
                                 tobaccosHistory.Select(t => t.ToString()),
                                 user.SmokedHistory, BotSettings.TypeSearchTobacco)));
                     }
@@ -126,7 +143,7 @@ namespace Hookah_Advisor.TelegramBot
                                     BotSettings.SearchListEmpty);
                             }
                             else
-                                TelegramMessageSender.PrintTobaccoToKeyboard(message, botClient, resultRequest);
+                                MessageSender.PrintTobaccoToKeyboard(message, botClient, resultRequest);
 
                             break;
                         }

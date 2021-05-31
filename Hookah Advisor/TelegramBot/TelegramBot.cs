@@ -43,11 +43,11 @@ namespace Hookah_Advisor.TelegramBot
 
             if (message.Type != MessageType.Text)
             {
-                TelegramMessageSender.SendWhenNotTextMessage(message, _botClient);
+                MessageSender.SendWhenNotTextMessage(message, _botClient);
                 return;
             }
 
-            TelegramMessage.MessageReceived(message, _userRepository,
+            MessageHandler.MessageReceived(message, _userRepository,
                 _itemRepository, _botClient);
         }
 
