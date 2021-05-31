@@ -43,7 +43,7 @@ namespace Hookah_Advisor.TelegramBot
 
             if (message.Type != MessageType.Text)
             {
-                MessageSender.SendWhenNotTextMessage(message, _botClient);
+                MessageSender.SendText(BotSettings.InvalidMessage, _botClient, message);
                 return;
             }
 

@@ -13,12 +13,12 @@ namespace Hookah_Advisor
         static void Main()
         {
             var container = ConfigureContainer();
-            var tgBot = container.Get<TelegramBot.TelegramBot>();
-            tgBot.Start();
+            var telegramBot = container.Get<TelegramBot.TelegramBot>();
+            telegramBot.Start();
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
-            tgBot.Stop();
+            telegramBot.Stop();
         }
 
         private static StandardKernel ConfigureContainer()
