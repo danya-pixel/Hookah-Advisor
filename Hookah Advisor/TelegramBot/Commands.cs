@@ -18,7 +18,8 @@ namespace Hookah_Advisor.TelegramBot
                     break;
                 case UserCondition.Search:
                 {
-                    var resultRequest = tobaccoRepository.SearchTobaccoInDict(message.Text.ToLower());
+                    if (message.Text.Length < 3) return;
+                    var resultRequest = tobaccoRepository.SearchItemInDict(message.Text.ToLower());
                     if (resultRequest.Count == 0)
                     {
                         MessageSender.SendText(BotSettings.SearchListEmpty, botClient, message);

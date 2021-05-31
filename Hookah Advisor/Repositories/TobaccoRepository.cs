@@ -36,7 +36,7 @@ namespace Hookah_Advisor.Repositories
             _tobaccoParser.Write(_tobaccoDatabase, "table_v2_test.json");
         }
 
-        public List<Tobacco> SearchTobaccoInDict(string userRequest)
+        public List<Tobacco> SearchItemInDict(string userRequest)
         {
             return _tobaccoDatabase.Values.Where(
                 tobacco => tobacco.Tastes.Any(tobaccoTaste

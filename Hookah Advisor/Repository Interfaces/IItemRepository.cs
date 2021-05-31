@@ -6,7 +6,7 @@ namespace Hookah_Advisor.Repository_Interfaces
     {
         T GetItemById(int itemId);
         void Save();
-        List<T> SearchTobaccoInDict(string toLower);
+        List<T> SearchItemInDict(string toLower);
         public int GetRepositorySize();
     }
 }
