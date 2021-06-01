@@ -12,6 +12,7 @@ namespace Hookah_Advisor.TelegramBot
         public static void TextReceived(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository)
         {
+            
             var userId = message.From.Id;
 
             switch (userRepository.GetUserCondition(userId).GetCondition())
@@ -93,6 +94,8 @@ namespace Hookah_Advisor.TelegramBot
             var userId = message.From.Id;
             userRepository.UpdateUserCondition(userId, UserCondition.Recommendation);
             userRepository.UpdateUserQuestionNumber(userId, 0);
+            
+            
             
              
         }
