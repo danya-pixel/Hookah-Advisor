@@ -103,6 +103,7 @@ namespace Hookah_Advisor.TelegramBot
         public static void SmokeLater(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository)
         {
+            userRepository.Save();
             var user = userRepository.GetUserById(message.From.Id);
             var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
             if (!tobaccos.Any())
