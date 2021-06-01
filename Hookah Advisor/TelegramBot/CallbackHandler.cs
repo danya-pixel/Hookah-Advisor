@@ -16,6 +16,8 @@ namespace Hookah_Advisor.TelegramBot
             var callbackType = callbackQuery.Data.Split('_')[0];
             var idTobacco = Convert.ToInt32(callbackQuery.Data.Split('_')[1]);
             var tobaccoSelected = tobaccoRepository.GetItemById(idTobacco);
+            if (!userRepository.IsUserRegistered(callbackQuery.From.Id))
+                return;
             var user = userRepository.GetUserById(callbackQuery.From.Id);
 
             switch (callbackType)
