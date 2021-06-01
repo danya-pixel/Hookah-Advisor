@@ -9,33 +9,33 @@
 
     public class Condition
     {
-        private UserCondition _condition;
-        private int _questionNumber;
+        public UserCondition CurrentCondition;
+        public int QuestionNumber;
 
-        public Condition(UserCondition condition, int questionNumber)
+        public Condition(UserCondition currentCondition, int questionNumber)
         {
-            _condition = condition;
-            _questionNumber = questionNumber;
+            CurrentCondition = currentCondition;
+            QuestionNumber = questionNumber;
         }
 
         public void SetCondition(UserCondition condition)
         {
-            _condition = condition;
+            CurrentCondition = condition;
         }
         
         public void SetQuestionNumber(int questionNumber)
         {
-            _questionNumber = questionNumber;
+            QuestionNumber = questionNumber;
         }
         
         public UserCondition GetCondition()
         {
-            return _condition;
+            return CurrentCondition;
         }
         
         public int GetQuestionNumber()
         {
-            return _questionNumber;
+            return QuestionNumber;
         }
     }
 }

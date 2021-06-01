@@ -33,8 +33,4 @@
       <None Include="Source\tobaccoDatabase.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="bin\Release\net5.0\publish" />
-    </ItemGroup>
-
 </Project>
