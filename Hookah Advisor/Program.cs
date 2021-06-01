@@ -17,9 +17,8 @@ namespace Hookah_Advisor
             var telegramBot = container.Get<TelegramBot.TelegramBot>();
             telegramBot.Start();
             Console.WriteLine("Press any key to exit");
-            while (true)
-            {
-            }
+            Console.ReadKey();
+            telegramBot.Stop();
         }
 
         private static StandardKernel ConfigureContainer()

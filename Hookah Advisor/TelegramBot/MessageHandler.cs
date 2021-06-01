@@ -18,7 +18,7 @@ namespace Hookah_Advisor.TelegramBot
                 MessageSender.SendText(BotSettings.InvalidUserMessage, botClient, message);
                 return;
             }
-            userRepository.Save();
+            
 
             switch (message.Text)
             {

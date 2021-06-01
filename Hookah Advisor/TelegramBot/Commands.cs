@@ -12,7 +12,6 @@ namespace Hookah_Advisor.TelegramBot
         public static void TextReceived(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository)
         {
-            
             var userId = message.From.Id;
 
             switch (userRepository.GetUserCondition(userId).GetCondition())
@@ -94,16 +93,11 @@ namespace Hookah_Advisor.TelegramBot
             var userId = message.From.Id;
             userRepository.UpdateUserCondition(userId, UserCondition.Recommendation);
             userRepository.UpdateUserQuestionNumber(userId, 0);
-            
-            
-            
-             
         }
 
         public static void SmokeLater(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository)
         {
-            userRepository.Save();
             var user = userRepository.GetUserById(message.From.Id);
             var tobaccos = user.SmokeLater.Select(t => tobaccoRepository.GetItemById(t));
             if (!tobaccos.Any())
@@ -128,7 +122,8 @@ namespace Hookah_Advisor.TelegramBot
             }
             else
             {
-                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokedHistoryMessage, BotSettings.TypeSearchTobacco,
+                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokedHistoryMessage,
+                    BotSettings.TypeSearchTobacco,
                     botClient, message, tobaccosHistory, user);
             }
         }
