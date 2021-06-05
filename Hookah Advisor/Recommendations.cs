@@ -7,20 +7,20 @@ namespace Hookah_Advisor
 {
     public class Recommendations : IRecommendation<Option>
     {
-        private readonly Dictionary<int, Option> optionData;
+        private readonly Dictionary<int, Option> _optionData;
         private readonly IParser<Option> _optionParser;
 
-        public Recommendations(IParser<Option> _optionParser)
+        public Recommendations(IParser<Option> optionParser)
         {
-            this._optionParser = _optionParser;
-            optionData = _optionParser.Load("option_list.json");
+            _optionParser = optionParser;
+            _optionData = optionParser.Load("option_list.json");
         }
 
         public Option GetItemById(int itemId)
         {
             try
             {
-                return optionData[itemId];
+                return _optionData[itemId];
             }
             catch (Exception e)
             {
@@ -33,10 +33,10 @@ namespace Hookah_Advisor
         {
             if (next)
             {
-                return optionData[questNum + 1];
+                return _optionData[questNum + 1];
             }
 
-            return optionData[questNum];
+            return _optionData[questNum];
         }
 
 

@@ -9,7 +9,7 @@ namespace Hookah_Advisor.TelegramBot
 {
     public static class CallbackHandler
     {
-        public static string getAnswer(CallbackQuery callbackQuery)
+        public static string GetAnswer(CallbackQuery callbackQuery)
         {
             var answer = callbackQuery.Data.Split('_');
             if (answer.Length == 2)
@@ -25,7 +25,7 @@ namespace Hookah_Advisor.TelegramBot
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackType = callbackQuery.Data.Split('_')[0];
             var idObject = Convert.ToInt32(callbackQuery.Data.Split('_')[1]);
-            var answer = getAnswer(callbackQuery);
+            var answer = GetAnswer(callbackQuery);
             var tobaccoSelected = tobaccoRepository.GetItemById(idObject);
 
             var user = userRepository.GetUserById(callbackQuery.From.Id);
@@ -63,6 +63,7 @@ namespace Hookah_Advisor.TelegramBot
 
                 case BotSettings.TypeOptionYesNo:
                 {
+                    answer = answer.ToLower();
                     if (answer == "нет")
                     {
                         var userQuest = user.GetUserQuestionNumber();

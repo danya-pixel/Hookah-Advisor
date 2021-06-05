@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -96,9 +95,9 @@ namespace Hookah_Advisor.TelegramBot
             {
                 case "keyboard":
                 {
-                    var array = option.answersTastes.Select(t => t.ToString());
+                    var array = option.AnswersTastes.Select(t => t.ToString());
 
-                    var optNum = option.question_number;
+                    var optNum = option.QuestionNumber;
                     var keyboardMarkup =
                         new InlineKeyboardMarkup(GetInlineKeyboard(array, optNum, BotSettings.TypeOption));
 
@@ -112,10 +111,10 @@ namespace Hookah_Advisor.TelegramBot
 
                 case "question":
                 {
-                    var array = option.firstAnswers.Select(t => t.ToString());
-                    var question = option.question;
+                    var array = option.FirstAnswers.Select(t => t.ToString());
+                    var question = option.Question;
                     var keyboardMarkup =
-                        new InlineKeyboardMarkup(GetInlineKeyboard(array, option.question_number,
+                        new InlineKeyboardMarkup(GetInlineKeyboard(array, option.QuestionNumber,
                             BotSettings.TypeOptionYesNo));
                     await botClient.SendTextMessageAsync(
                         message.From.Id,

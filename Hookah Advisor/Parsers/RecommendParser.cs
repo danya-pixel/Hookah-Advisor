@@ -17,7 +17,7 @@ namespace Hookah_Advisor.Parsers
 
             foreach (var option in optionList)
             {
-                optionDict[option.question_number] = option;
+                optionDict[option.QuestionNumber] = option;
             }
 
             return optionDict;
