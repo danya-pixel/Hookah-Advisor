@@ -55,7 +55,10 @@ namespace Hookah_Advisor
         public const string TypeSearchTobacco = "tobaccoFromRequest";
         public const string TypeUnSmoke = "unShmokeLater";
         public const string TypeSmokeLater = "shmokeLater";
-
+        public const string TypeOption = "optionanswer";
+        public const string TypeOptionYesNo = "optionfirstquest";
+        public const string CommandTypeYesNo = "commansyesno";
+        public const string CommandTypeTastes = "commandtastes";
         public const string KeyboardSmokeLater = "Покурить позже";
         public const string KeyboardUnSmokeLater = "Я покурил";
         public const string AnswerSmokeLater = "Покумарим";

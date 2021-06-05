@@ -10,10 +10,11 @@ namespace Hookah_Advisor.TelegramBot
     public static class Commands
     {
         public static void TextReceived(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository)
+            IItemRepository<Tobacco> tobaccoRepository, IRecommendation<Option> recommendation, string typeCommand)
         {
             var userId = message.From.Id;
 
+            
             switch (userRepository.GetUserCondition(userId).GetCondition())
             {
                 case UserCondition.None:
@@ -27,12 +28,41 @@ namespace Hookah_Advisor.TelegramBot
                         MessageSender.SendText(BotSettings.SearchListEmpty, botClient, message);
                     }
                     else
+
                         MessageSender.PrintTobaccosToKeyboard(message, botClient, resultRequest);
 
                     break;
                 }
 
                 case UserCondition.Recommendation:
+                {
+                    switch (typeCommand)
+                    {
+                        case BotSettings.CommandTypeYesNo:
+                        {
+                            
+                            var userQuestionNum1 = userRepository.GetUserById(userId).GetUserQuestionNumber();
+
+                            var curOption1 = recommendation.GetNextQuestion(userQuestionNum1, false);
+                            MessageSender.PrintOptionToKeyboard(message, botClient, curOption1, "question");
+
+
+                            break;
+                        }
+
+                        case BotSettings.CommandTypeTastes:
+                        {
+                            
+                            var userQuestionNum2 = userRepository.GetUserById(userId).GetUserQuestionNumber();
+
+                            var curOption2 = recommendation.GetNextQuestion(userQuestionNum2, false);
+                            MessageSender.PrintOptionToKeyboard(message, botClient, curOption2, "keyboard");
+
+
+                            break;
+                        }
+                    }
+                }
                     break;
             }
         }
@@ -88,13 +118,18 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public static void Recommendation(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository)
+            IRecommendation<Option> recommendation, IItemRepository<Tobacco> tobaccoRepository)
         {
             var userId = message.From.Id;
+
             userRepository.UpdateUserCondition(userId, UserCondition.Recommendation);
             userRepository.UpdateUserQuestionNumber(userId, 0);
+
+            TextReceived(botClient, message, userRepository, tobaccoRepository, recommendation,
+                BotSettings.CommandTypeYesNo);
+
+
             
-             
         }
 
         public static void SmokeLater(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
@@ -124,7 +159,8 @@ namespace Hookah_Advisor.TelegramBot
             }
             else
             {
-                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokedHistoryMessage, BotSettings.TypeSearchTobacco,
+                MessageSender.SendTextWithInlineKeyboard(BotSettings.SmokedHistoryMessage,
+                    BotSettings.TypeSearchTobacco,
                     botClient, message, tobaccosHistory, user);
             }
         }

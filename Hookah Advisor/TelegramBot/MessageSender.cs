@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -37,7 +38,8 @@ namespace Hookah_Advisor.TelegramBot
                 text);
         }
 
-        public static async void SendTextWithInlineKeyboard(string text, string requestType, ITelegramBotClient botClient,
+        public static async void SendTextWithInlineKeyboard(string text, string requestType,
+            ITelegramBotClient botClient,
             Message message, IEnumerable<Tobacco> tobaccos, User user)
         {
             switch (text)
@@ -87,6 +89,44 @@ namespace Hookah_Advisor.TelegramBot
             );
         }
 
+        public static async void PrintOptionToKeyboard(Message message, ITelegramBotClient botClient,
+            Option option, string func)
+        {
+            switch (func)
+            {
+                case "keyboard":
+                {
+                    var array = option.answersTastes.Select(t => t.ToString());
+
+                    var optNum = option.question_number;
+                    var keyboardMarkup =
+                        new InlineKeyboardMarkup(GetInlineKeyboard(array, optNum, BotSettings.TypeOption));
+
+                    await botClient.SendTextMessageAsync(
+                        message.From.Id,
+                        "Смотри что есть",
+                        replyMarkup: keyboardMarkup
+                    );
+                    break;
+                }
+
+                case "question":
+                {
+                    var array = option.firstAnswers.Select(t => t.ToString());
+                    var question = option.question;
+                    var keyboardMarkup =
+                        new InlineKeyboardMarkup(GetInlineKeyboard(array, option.question_number,
+                            BotSettings.TypeOptionYesNo));
+                    await botClient.SendTextMessageAsync(
+                        message.From.Id,
+                        question,
+                        replyMarkup: keyboardMarkup
+                    );
+                    break;
+                }
+            }
+        }
+
         private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(
             IEnumerable<string> stringArray,
             IEnumerable<T> idTobaccos, string type)
@@ -103,6 +143,24 @@ namespace Hookah_Advisor.TelegramBot
 
             return keyboardInline;
         }
+
+        private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard(
+            IEnumerable<string> stringArray,
+            int idOption, string type)
+        {
+            var keyboardInline = stringArray
+                .Select((str) => new[]
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = str,
+                        CallbackData = $"{type}_{idOption}_{str}"
+                    }
+                });
+
+            return keyboardInline;
+        }
+
 
         private static IEnumerable<IEnumerable<InlineKeyboardButton>> GetInlineKeyboard<T>(string str, T id,
             string type)

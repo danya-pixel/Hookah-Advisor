@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using System;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Hookah_Advisor.Repository_Interfaces;
 
@@ -8,7 +9,9 @@ namespace Hookah_Advisor.TelegramBot
     public static class MessageHandler
     {
         public static void MessageReceived(Message message, IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient)
+            IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient,
+            IRecommendation<Option> recommendation
+        )
         {
             var userFirstName = message.From.FirstName;
             var userId = message.From.Id;
@@ -44,8 +47,10 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 case BotSettings.ButtonRecommendation:
-                    userRepository.UpdateUserQuestionNumber(userId, 1);
-                    Commands.Recommendation(botClient, message, userRepository, tobaccoRepository);
+
+
+                    Commands.Recommendation(botClient, message, userRepository, recommendation, tobaccoRepository);
+
                     break;
 
                 case BotSettings.ButtonSmokeLater:
@@ -57,7 +62,8 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 default:
-                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository);
+                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository, recommendation,
+                        "default");
                     break;
             }
         }

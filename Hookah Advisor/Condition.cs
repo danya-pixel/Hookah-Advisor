@@ -9,8 +9,8 @@
 
     public class Condition
     {
-        private UserCondition _condition;
-        private int _questionNumber;
+        public UserCondition _condition;
+        public int _questionNumber;
 
         public Condition(UserCondition condition, int questionNumber)
         {
