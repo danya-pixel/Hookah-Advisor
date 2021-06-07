@@ -9,7 +9,7 @@ namespace Hookah_Advisor
         public string UserName { get; set; } //should be public for Serializer
         public HashSet<int> SmokeLater { get; set; }
         public HashSet<int> SmokedHistory { get; set; }
-        public readonly Condition Condition; //should be public for Serializer
+        public Condition Condition; //should be public for Serializer
 
         public User(int id, string userName)
         {

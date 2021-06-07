@@ -13,6 +13,12 @@ namespace Hookah_Advisor.TelegramBot
         private readonly IItemRepository<Tobacco> _itemRepository;
         private readonly IRecommendation<Option> _recommendation;
 
+        ~TelegramBot()
+        {
+            Console.WriteLine("I sdox");
+            Stop();
+        }
+
         public TelegramBot(ITelegramBotClient botClient, IItemRepository<Tobacco> itemRepository,
             IUserRepository userRepository, IRecommendation<Option> recommendation)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Hookah_Advisor.Parsers;
 
 using Telegram.Bot;
@@ -18,7 +19,6 @@ namespace Hookah_Advisor
             var container = ConfigureContainer();
             var telegramBot = container.Get<TelegramBot.TelegramBot>();
             telegramBot.Start();
-
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
             telegramBot.Stop();

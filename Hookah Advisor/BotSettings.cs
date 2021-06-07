@@ -6,7 +6,6 @@ namespace Hookah_Advisor
     public static class BotSettings
     {
         public static string Token { get; } = Environment.GetEnvironmentVariable("TELEGRAM_TOKEN");
-
         public const string ButtonSearch = "Поиск";
         public const string ButtonRecommendation = "Рекомендации";
         public const string ButtonSmokeLater = "Покурить позже";
@@ -63,8 +62,9 @@ namespace Hookah_Advisor
         public const string KeyboardUnSmokeLater = "Я покурил";
         public const string AnswerSmokeLater = "Покумарим";
         public const string AnswerUnSmokeLater = "Покалюмбасили";
+        
+        
 
-
-        private static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
+        public static readonly List<string> YesOrNoKeyboard = new() {"Да", "Нет"};
     }
 }

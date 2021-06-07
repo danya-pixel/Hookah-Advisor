@@ -1,0 +1,11 @@
+﻿version: '3'
+services:
+  bot:
+    image: djkostya/hookah-advisor:0.0.1
+    container_name: hookah-advisor
+    restart: always
+    tty: true
+    volumes:
+      - ./Source/:/App/Source/
+    environment:
+    working_dir: /App

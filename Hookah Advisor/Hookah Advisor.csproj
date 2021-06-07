@@ -24,6 +24,13 @@
 
     <ItemGroup>
       <None Remove="source\**" />
+      <None Include="bin\Debug\net5.0\Source\Recomendations.json" />
+      <None Include="bin\Debug\net5.0\Source\tobaccoDatabase.json" />
+      <None Include="bin\Release\net5.0\publish\Source\Recomendations.json" />
+      <None Include="bin\Release\net5.0\publish\Source\tobaccoDatabase.json" />
+      <None Include="bin\Release\net5.0\Source\Recomendations.json" />
+      <None Include="bin\Release\net5.0\Source\tobaccoDatabase.json" />
+      <None Include="Source\tobaccoDatabase.json" />
     </ItemGroup>
 
 </Project>
