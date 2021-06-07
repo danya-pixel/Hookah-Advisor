@@ -33,7 +33,7 @@ namespace Hookah_Advisor.Repositories
 
         public void Save()
         {
-            _tobaccoParser.Write(_tobaccoDatabase, "tobaccoDatabase_test.json");
+            _tobaccoParser.Write(_tobaccoDatabase, "tobaccoDatabase.json");
         }
 
         public List<Tobacco> SearchItemInDict(string userRequest)
