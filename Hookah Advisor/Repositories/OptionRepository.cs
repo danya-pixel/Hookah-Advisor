@@ -5,12 +5,12 @@ using Hookah_Advisor.Repository_Interfaces;
 
 namespace Hookah_Advisor
 {
-    public class Recommendations : IRecommendation<Option>
+    public class OptionRepositories : IOptionRepository<Option>
     {
         private readonly Dictionary<int, Option> optionData;
         private readonly IParser<Option> _optionParser;
 
-        public Recommendations(IParser<Option> _optionParser)
+        public OptionRepositories(IParser<Option> _optionParser)
         {
             this._optionParser = _optionParser;
             optionData = _optionParser.Load("option_list.json");

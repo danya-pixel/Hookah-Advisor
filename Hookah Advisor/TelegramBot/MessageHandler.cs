@@ -10,7 +10,7 @@ namespace Hookah_Advisor.TelegramBot
     {
         public static void MessageReceived(Message message, IUserRepository userRepository,
             IItemRepository<Tobacco> tobaccoRepository, ITelegramBotClient botClient,
-            IRecommendation<Option> recommendation
+            IOptionRepository<Option> optionRepository
         )
         {
             var userFirstName = message.From.FirstName;
@@ -50,7 +50,7 @@ namespace Hookah_Advisor.TelegramBot
                 case BotSettings.ButtonRecommendation:
 
 
-                    Commands.Recommendation(botClient, message, userRepository, recommendation, tobaccoRepository);
+                    Commands.Recommendation(botClient, message, userRepository, optionRepository, tobaccoRepository);
 
                     break;
 
@@ -63,7 +63,7 @@ namespace Hookah_Advisor.TelegramBot
                     break;
 
                 default:
-                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository, recommendation,
+                    Commands.TextReceived(botClient, message, userRepository, tobaccoRepository, optionRepository,
                         "default");
                     break;
             }

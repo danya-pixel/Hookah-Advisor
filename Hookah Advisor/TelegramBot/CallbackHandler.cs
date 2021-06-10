@@ -19,7 +19,7 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public static void BotOnCallbackQueryReceived(IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository, IRecommendation<Option> recommendation,
+            IItemRepository<Tobacco> tobaccoRepository, IOptionRepository<Option> optionRepository,
             CallbackQueryEventArgs callbackQueryEventArgs, ITelegramBotClient botClient)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
@@ -79,7 +79,7 @@ namespace Hookah_Advisor.TelegramBot
                         var a = callbackQuery.Message;
                         a.From.Id = callbackQuery.From.Id;
                         Commands.TextReceived(botClient, callbackQuery.Message, userRepository, tobaccoRepository,
-                            recommendation,
+                            optionRepository,
                             BotSettings.CommandTypeYesNo);
                     }
                     else
@@ -109,7 +109,7 @@ namespace Hookah_Advisor.TelegramBot
 
                         callbackQuery.Message.From.Id = callbackQuery.From.Id;
                         Commands.TextReceived(botClient, callbackQuery.Message, userRepository, tobaccoRepository,
-                            recommendation,
+                            optionRepository,
                             BotSettings.CommandTypeTastes);
                     }
 
