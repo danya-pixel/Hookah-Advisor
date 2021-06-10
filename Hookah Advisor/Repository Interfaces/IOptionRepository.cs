@@ -1,7 +1,7 @@
 namespace Hookah_Advisor.Repository_Interfaces
 {
-    public interface IOptionRepository<T>
+    public interface IOptionRepository<out T>
     {
-        public Option GetNextQuestion(int questNum, bool next);
+        public T GetNextQuestion(int questNum, bool next);
     }
 }

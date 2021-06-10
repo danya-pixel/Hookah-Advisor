@@ -3,24 +3,22 @@ using System.Collections.Generic;
 using Hookah_Advisor.Parsers;
 using Hookah_Advisor.Repository_Interfaces;
 
-namespace Hookah_Advisor
+namespace Hookah_Advisor.Repositories
 {
-    public class OptionRepositories : IOptionRepository<Option>
+    public class OptionRepository : IOptionRepository<Option>
     {
-        private readonly Dictionary<int, Option> optionData;
-        private readonly IParser<Option> _optionParser;
+        private readonly Dictionary<int, Option> _optionData;
 
-        public OptionRepositories(IParser<Option> _optionParser)
+        public OptionRepository(IParser<Option> optionParser)
         {
-            this._optionParser = _optionParser;
-            optionData = _optionParser.Load("option_list.json");
+            _optionData = optionParser.Load("optionList.json");
         }
 
         public Option GetItemById(int itemId)
         {
             try
             {
-                return optionData[itemId];
+                return _optionData[itemId];
             }
             catch (Exception e)
             {
@@ -33,26 +31,10 @@ namespace Hookah_Advisor
         {
             if (next)
             {
-                return optionData[questNum + 1];
+                return _optionData[questNum + 1];
             }
 
-            return optionData[questNum];
-        }
-
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Option> SearchTobaccoInDict(string toLower)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetRepositorySize()
-        {
-            throw new NotImplementedException();
+            return _optionData[questNum];
         }
     }
 }
