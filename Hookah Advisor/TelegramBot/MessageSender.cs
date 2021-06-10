@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -22,20 +21,42 @@ namespace Hookah_Advisor.TelegramBot
         public static async void SendTobacco(string message, Tobacco tobacco, string buttonType,
             CallbackQuery callbackQuery, ITelegramBotClient botClient)
         {
-            await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, message,
-                replyMarkup: new InlineKeyboardMarkup(
-                    GetInlineKeyboard(BotSettings.KeyboardSmokeLater, tobacco.Id,
-                        buttonType)));
-            await botClient.AnswerCallbackQueryAsync(
-                callbackQuery.Id,
-                $"{tobacco}");
+            switch (buttonType)
+            {
+                case BotSettings.TypeSmokeLater:
+                    await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, message,
+                        replyMarkup: new InlineKeyboardMarkup(
+                            GetInlineKeyboard(BotSettings.KeyboardSmokeLater, tobacco.Id,
+                                buttonType)));
+                    await botClient.AnswerCallbackQueryAsync(
+                        callbackQuery.Id,
+                        $"{tobacco}");
+                    break;
+                case BotSettings.TypeUnSmoke:
+                    await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, message,
+                        replyMarkup: new InlineKeyboardMarkup(
+                            GetInlineKeyboard(BotSettings.KeyboardUnSmokeLater, tobacco.Id,
+                                buttonType)));
+                    await botClient.AnswerCallbackQueryAsync(
+                        callbackQuery.Id,
+                        $"{tobacco}");
+                    break;
+            }
         }
 
         public static async void SendText(string text, ITelegramBotClient botClient, Message message)
         {
+            if (text == BotSettings.StartMessage)
+            {
+                var chat = message.Chat;
+                var userFirstName = message.From.FirstName;
+                text = BotSettings.HelloMessage + userFirstName + BotSettings.StartMessage;
+            }
+
             await botClient.SendTextMessageAsync(
                 message.Chat,
-                text);
+                text,
+                replyMarkup: GetButtons());
         }
 
         public static async void SendTextWithInlineKeyboard(string text, string requestType,
@@ -63,16 +84,6 @@ namespace Hookah_Advisor.TelegramBot
             }
         }
 
-        public static async void SendStartMessage(Message message, ITelegramBotClient botClient)
-        {
-            var chat = message.Chat;
-            var userFirstName = message.From.FirstName;
-
-            await botClient.SendTextMessageAsync(
-                chat,
-                BotSettings.HelloMessage + userFirstName + BotSettings.StartMessage, replyMarkup: GetButtons());
-        }
-
 
         public static async void PrintTobaccosToKeyboard(Message message, ITelegramBotClient botClient,
             List<Tobacco> tobaccos)
@@ -96,9 +107,9 @@ namespace Hookah_Advisor.TelegramBot
             {
                 case "keyboard":
                 {
-                    var array = option.answersTastes.Select(t => t.ToString());
+                    var array = option.AnswersTastes.Select(t => t.ToString());
 
-                    var optNum = option.question_number;
+                    var optNum = option.QuestionNumber;
                     var keyboardMarkup =
                         new InlineKeyboardMarkup(GetInlineKeyboard(array, optNum, BotSettings.TypeOption));
 
@@ -112,10 +123,10 @@ namespace Hookah_Advisor.TelegramBot
 
                 case "question":
                 {
-                    var array = option.firstAnswers.Select(t => t.ToString());
-                    var question = option.question;
+                    var array = option.FirstAnswers.Select(t => t.ToString());
+                    var question = option.Question;
                     var keyboardMarkup =
-                        new InlineKeyboardMarkup(GetInlineKeyboard(array, option.question_number,
+                        new InlineKeyboardMarkup(GetInlineKeyboard(array, option.QuestionNumber,
                             BotSettings.TypeOptionYesNo));
                     await botClient.SendTextMessageAsync(
                         message.From.Id,

@@ -45,10 +45,6 @@ namespace Hookah_Advisor.Repositories
             ).ToList();
         }
 
-        public List<Tobacco> RecommendTobacco()
-        {
-            return null;
-        }
 
         public int GetRepositorySize()
         {

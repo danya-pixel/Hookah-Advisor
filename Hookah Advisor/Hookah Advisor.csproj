@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <Compile Remove="source\**" />
-      <Compile Remove="Repositories\OptionRepository.cs" />
       <Compile Remove="Option\Option.cs" />
     </ItemGroup>
 
@@ -30,6 +29,7 @@
       <None Include="bin\Release\net5.0\publish\Source\tobaccoDatabase.json" />
       <None Include="bin\Release\net5.0\Source\Recomendations.json" />
       <None Include="bin\Release\net5.0\Source\tobaccoDatabase.json" />
+      <None Include="Source\optionList.json" />
       <None Include="Source\tobaccoDatabase.json" />
     </ItemGroup>
 

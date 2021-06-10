@@ -10,12 +10,12 @@ namespace Hookah_Advisor.TelegramBot
     public static class Commands
     {
         public static void TextReceived(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository, IRecommendation<Option> recommendation, string typeCommand)
+            IItemRepository<Tobacco> tobaccoRepository, IOptionRepository<Option> optionRepository, string typeCommand)
         {
             var userId = message.From.Id;
 
-            
-            switch (userRepository.GetUserCondition(userId).GetCondition())
+
+            switch (userRepository.GetUserCondition(userId).UserConditionProp)
             {
                 case UserCondition.None:
                     break;
@@ -40,10 +40,9 @@ namespace Hookah_Advisor.TelegramBot
                     {
                         case BotSettings.CommandTypeYesNo:
                         {
-                            
-                            var userQuestionNum1 = userRepository.GetUserById(userId).GetUserQuestionNumber();
+                            var userQuestionNum1 = userRepository.GetUserById(userId).Condition.QuestionNumber;
 
-                            var curOption1 = recommendation.GetNextQuestion(userQuestionNum1, false);
+                            var curOption1 = optionRepository.GetNextQuestion(userQuestionNum1, false);
                             MessageSender.PrintOptionToKeyboard(message, botClient, curOption1, "question");
 
 
@@ -52,10 +51,9 @@ namespace Hookah_Advisor.TelegramBot
 
                         case BotSettings.CommandTypeTastes:
                         {
-                            
-                            var userQuestionNum2 = userRepository.GetUserById(userId).GetUserQuestionNumber();
+                            var userQuestionNum2 = userRepository.GetUserById(userId).Condition.QuestionNumber;
 
-                            var curOption2 = recommendation.GetNextQuestion(userQuestionNum2, false);
+                            var curOption2 = optionRepository.GetNextQuestion(userQuestionNum2, false);
                             MessageSender.PrintOptionToKeyboard(message, botClient, curOption2, "keyboard");
 
 
@@ -70,7 +68,7 @@ namespace Hookah_Advisor.TelegramBot
         public static void Start(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
             string userFirstName)
         {
-            MessageSender.SendStartMessage(message, botClient);
+            MessageSender.SendText(BotSettings.StartMessage, botClient, message);
             var userId = message.From.Id;
 
             if (!userRepository.IsUserRegistered(userId))
@@ -118,18 +116,15 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public static void Recommendation(ITelegramBotClient botClient, Message message, IUserRepository userRepository,
-            IRecommendation<Option> recommendation, IItemRepository<Tobacco> tobaccoRepository)
+            IOptionRepository<Option> optionRepository, IItemRepository<Tobacco> tobaccoRepository)
         {
             var userId = message.From.Id;
 
             userRepository.UpdateUserCondition(userId, UserCondition.Recommendation);
             userRepository.UpdateUserQuestionNumber(userId, 0);
 
-            TextReceived(botClient, message, userRepository, tobaccoRepository, recommendation,
+            TextReceived(botClient, message, userRepository, tobaccoRepository, optionRepository,
                 BotSettings.CommandTypeYesNo);
-
-
-            
         }
 
         public static void SmokeLater(ITelegramBotClient botClient, Message message, IUserRepository userRepository,

@@ -9,33 +9,13 @@
 
     public class Condition
     {
-        public UserCondition _condition;
-        public int _questionNumber;
+        public UserCondition UserConditionProp { get; set; }
+        public int QuestionNumber { get; set; }
 
-        public Condition(UserCondition condition, int questionNumber)
+        public Condition(UserCondition userConditionProp, int questionNumber)
         {
-            _condition = condition;
-            _questionNumber = questionNumber;
-        }
-
-        public void SetCondition(UserCondition condition)
-        {
-            _condition = condition;
-        }
-        
-        public void SetQuestionNumber(int questionNumber)
-        {
-            _questionNumber = questionNumber;
-        }
-        
-        public UserCondition GetCondition()
-        {
-            return _condition;
-        }
-        
-        public int GetQuestionNumber()
-        {
-            return _questionNumber;
+            UserConditionProp = userConditionProp;
+            QuestionNumber = questionNumber;
         }
     }
 }

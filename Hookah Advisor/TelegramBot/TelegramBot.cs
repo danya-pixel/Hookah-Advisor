@@ -11,7 +11,7 @@ namespace Hookah_Advisor.TelegramBot
         private readonly ITelegramBotClient _botClient;
         private readonly IUserRepository _userRepository;
         private readonly IItemRepository<Tobacco> _itemRepository;
-        private readonly IRecommendation<Option> _recommendation;
+        private readonly IOptionRepository<Option> _optionRepository;
 
         ~TelegramBot()
         {
@@ -20,12 +20,12 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public TelegramBot(ITelegramBotClient botClient, IItemRepository<Tobacco> itemRepository,
-            IUserRepository userRepository, IRecommendation<Option> recommendation)
+            IUserRepository userRepository, IOptionRepository<Option> optionRepository)
         {
             _botClient = botClient;
             _itemRepository = itemRepository;
             _userRepository = userRepository; 
-            _recommendation = recommendation;
+            _optionRepository = optionRepository;
             _botClient.OnMessage += BotOnMessage;
             _botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
         }
@@ -56,13 +56,13 @@ namespace Hookah_Advisor.TelegramBot
             }
 
             MessageHandler.MessageReceived(message, _userRepository,
-                _itemRepository, _botClient, _recommendation);
+                _itemRepository, _botClient, _optionRepository);
         }
 
         private void BotOnCallbackQueryReceived(object sender,
             CallbackQueryEventArgs callbackQueryEventArgs)
         {
-            CallbackHandler.BotOnCallbackQueryReceived(_userRepository, _itemRepository, _recommendation, callbackQueryEventArgs,
+            CallbackHandler.BotOnCallbackQueryReceived(_userRepository, _itemRepository, _optionRepository, callbackQueryEventArgs,
                 _botClient);
         }
     }

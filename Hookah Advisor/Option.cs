@@ -5,21 +5,21 @@ namespace Hookah_Advisor
 {
     public class Option
     {
-        public int question_number { get; }
+        public int QuestionNumber { get; }
 
-        public string question { get; }
+        public string Question { get; }
 
-        public List<string> answersTastes { get; }
+        public List<string> AnswersTastes { get; }
 
-        public List<string> firstAnswers { get; }
+        public List<string> FirstAnswers { get; }
 
 
-        public Option(int question_number, string question, List<string> answersTastes, List<string> firstAnswers)
+        public Option(int questionNumber, string question, List<string> answersTastes, List<string> firstAnswers)
         {
-            this.question_number = question_number;
-            this.question = question;
-            this.firstAnswers = firstAnswers;
-            this.answersTastes = answersTastes;
+            QuestionNumber = questionNumber;
+            Question = question;
+            FirstAnswers = firstAnswers;
+            AnswersTastes = answersTastes;
         }
     }
 }

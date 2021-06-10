@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace Hookah_Advisor.Parsers
@@ -9,7 +8,7 @@ namespace Hookah_Advisor.Parsers
     {
         public Dictionary<int, Option> Load(string fileName)
         {
-            var str = File.ReadAllText("../../../" + fileName);
+            var str = File.ReadAllText("Source/" + fileName);
             var optionList = JsonConvert.DeserializeObject<List<Option>>(str);
 
             var optionDict = new Dictionary<int, Option>();
@@ -17,7 +16,7 @@ namespace Hookah_Advisor.Parsers
 
             foreach (var option in optionList)
             {
-                optionDict[option.question_number] = option;
+                optionDict[option.QuestionNumber] = option;
             }
 
             return optionDict;
@@ -25,14 +24,13 @@ namespace Hookah_Advisor.Parsers
 
         public void Write(Dictionary<int, Option> database, string fileName)
         {
-            var tobaccoList = database.Cast<Option>().ToList();
             List<Option> options = new List<Option>();
             foreach (var quest in database)
             {
                 options.Add(quest.Value);
             }
 
-            File.WriteAllText("../../../" + fileName, JsonConvert.SerializeObject(options));
+            File.WriteAllText("Source/" + fileName, JsonConvert.SerializeObject(options));
         }
     }
 }

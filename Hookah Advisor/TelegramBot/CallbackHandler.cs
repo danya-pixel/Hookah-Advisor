@@ -9,7 +9,7 @@ namespace Hookah_Advisor.TelegramBot
 {
     public static class CallbackHandler
     {
-        public static string getAnswer(CallbackQuery callbackQuery)
+        public static string GetAnswer(CallbackQuery callbackQuery)
         {
             var answer = callbackQuery.Data.Split('_');
             if (answer.Length == 2)
@@ -19,13 +19,13 @@ namespace Hookah_Advisor.TelegramBot
         }
 
         public static void BotOnCallbackQueryReceived(IUserRepository userRepository,
-            IItemRepository<Tobacco> tobaccoRepository, IRecommendation<Option> recommendation,
+            IItemRepository<Tobacco> tobaccoRepository, IOptionRepository<Option> optionRepository,
             CallbackQueryEventArgs callbackQueryEventArgs, ITelegramBotClient botClient)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackType = callbackQuery.Data.Split('_')[0];
             var idObject = Convert.ToInt32(callbackQuery.Data.Split('_')[1]);
-            var answer = getAnswer(callbackQuery);
+            var answer = GetAnswer(callbackQuery);
             var tobaccoSelected = tobaccoRepository.GetItemById(idObject);
 
             var user = userRepository.GetUserById(callbackQuery.From.Id);
@@ -63,32 +63,33 @@ namespace Hookah_Advisor.TelegramBot
 
                 case BotSettings.TypeOptionYesNo:
                 {
+                    answer = answer.ToLower();
                     if (answer == "нет")
                     {
-                        var userQuest = user.GetUserQuestionNumber();
+                        var userQuest = user.Condition.QuestionNumber;
 
                         if (userQuest == 9)
                         {
-                            MessageSender.SendText("Не знаю, что тебе еще можно предложить ", botClient, callbackQuery.Message);
-                            user.SetUserCondition(UserCondition.None);
-                            user.SetUserQuestionNumber(0);
+                            MessageSender.SendText("Не знаю, что тебе еще можно предложить ", botClient,
+                                callbackQuery.Message);
+                            user.Condition.UserConditionProp = UserCondition.None;
+                            user.Condition.QuestionNumber = 0;
                             return;
                         }
 
-                        user.SetUserQuestionNumber(userQuest + 1);
-                        var a = callbackQuery.Message;
-                        a.From.Id = callbackQuery.From.Id;
+                        user.Condition.QuestionNumber = userQuest + 1;
+                        callbackQuery.Message.From.Id = callbackQuery.From.Id;
                         Commands.TextReceived(botClient, callbackQuery.Message, userRepository, tobaccoRepository,
-                            recommendation,
+                            optionRepository,
                             BotSettings.CommandTypeYesNo);
                     }
                     else
                     {
-                        var userQuest = user.GetUserQuestionNumber();
+                        var userQuest = user.Condition.QuestionNumber;
 
                         if (userQuest != idObject)
                             return;
-                        
+
                         if (userQuest == 0)
                         {
                             var resultRequest = tobaccoRepository.SearchItemInDict(answer);
@@ -104,12 +105,11 @@ namespace Hookah_Advisor.TelegramBot
 
                             return;
                         }
-                        
-                        
+
 
                         callbackQuery.Message.From.Id = callbackQuery.From.Id;
                         Commands.TextReceived(botClient, callbackQuery.Message, userRepository, tobaccoRepository,
-                            recommendation,
+                            optionRepository,
                             BotSettings.CommandTypeTastes);
                     }
 

@@ -38,7 +38,7 @@ namespace Hookah_Advisor.Repositories
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
 
-            GetUserById(userId).SetUserName(newUserName);
+            GetUserById(userId).UserName = newUserName;
         }
 
         public void UpdateUserCondition(int userId, UserCondition condition)
@@ -46,7 +46,7 @@ namespace Hookah_Advisor.Repositories
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
 
-            GetUserById(userId).SetUserCondition(condition);
+            GetUserById(userId).Condition.UserConditionProp = condition;
         }
 
         public void UpdateUserQuestionNumber(int userId, int questionNumber)
@@ -54,7 +54,7 @@ namespace Hookah_Advisor.Repositories
             if (!IsUserRegistered(userId))
                 InvalidUserHandler();
 
-            GetUserById(userId).SetUserQuestionNumber(questionNumber);
+            GetUserById(userId).Condition.QuestionNumber = questionNumber;
         }
 
         public bool IsUserRegistered(int userId)
@@ -76,7 +76,7 @@ namespace Hookah_Advisor.Repositories
 
         public Condition GetUserCondition(int userId)
         {
-            return GetUserById(userId).GetUserCondition();
+            return GetUserById(userId).Condition;
         }
 
         public void Save()

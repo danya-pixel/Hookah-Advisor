@@ -12,8 +12,6 @@ namespace Hookah_Advisor
 {
     class Program
     {
-        
-
         static void Main()
         {
             var container = ConfigureContainer();
@@ -30,7 +28,7 @@ namespace Hookah_Advisor
             container.Bind<IParser<User>>().To<UserParser>();
             container.Bind<IUserRepository>().To<UserRepository>();
             container.Bind<IParser<Option>>().To<RecommendParser>();
-            container.Bind<IRecommendation<Option>>().To<Recommendations>();
+            container.Bind<IOptionRepository<Option>>().To<OptionRepository>();
             container.Bind<IParser<Tobacco>>().To<TobaccoParser>();
             container.Bind<IItemRepository<Tobacco>>().To<TobaccoRepository>();
             container.Bind<ITelegramBotClient>().ToConstant(new TelegramBotClient(BotSettings.Token));
